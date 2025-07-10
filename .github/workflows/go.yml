@@ -1,0 +1,73 @@
+name: Go
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24.0'
+        cache: true  # This enables Go module caching
+    
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Install mockery
+      run: go install github.com/vektra/mockery/v3@v3.3.2
+
+    - name: Install swag
+      run: go install github.com/swaggo/swag/cmd/swag@latest
+
+    - name: Verify mocks are up-to-date
+      run: |
+        mockery
+        
+        # Check diff exit code
+        git diff --quiet
+        exit_code=$?
+        
+        if [ $exit_code -ne 0 ]; then
+          echo "Mocks are out of date!"
+          echo "Run'mockery' and commit the changes"
+          exit 1
+        fi
+
+    - name: Verify docs are up-to-date
+      run: |
+        swag init \
+          -g main.go \
+          -d ./cmd/server,./internal/jobs,./internal/company,./internal/technology,./internal/jobtech,./internal/techalias \
+          -o ./docs
+        
+        # Check diff exit code
+        git diff --quiet docs/
+        exit_code=$?
+        
+        if [ $exit_code -ne 0 ]; then
+          echo "Swagger docs are out of date!"
+          echo "Run 'swag init' and commit the changes"
+          exit 1
+        fi
+
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v7
+      with:
+        # Optional: golangci-lint version to use. The default is the latest stable release.
+        version: v2.1.6
+
+        # The mode to install golangci-lint. It can be 'binary' or 'goinstall'.
+        # We recommend using the default "binary" install mode for speed and reliability.
+        install-mode: "binary"
+      
+    - name: Build
+      run: go build -v ./...
+      
+    - name: Test
+      run: go test -v ./...

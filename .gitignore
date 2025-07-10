@@ -1,0 +1,13 @@
+# Python env
+venv/
+__pycache__/
+**/data/
+
+# Node.js dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example

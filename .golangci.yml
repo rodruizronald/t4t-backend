@@ -1,0 +1,79 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - misspell
+    - staticcheck
+    - bodyclose
+    - errorlint
+    - errname
+    - paralleltest
+    - tparallel
+    - thelper
+    - sqlclosecheck
+    - noctx
+    - testifylint
+    - iface
+    - revive
+    - gocritic
+    # Fast Linter
+    - dupl
+    - lll
+    - cyclop
+    - gocognit
+    - goconst
+    - inamedparam
+    - decorder
+  settings:
+    govet:
+      enable:
+        - shadow
+    misspell:
+      locale: US
+    gocritic:
+      enabled-tags:
+        - diagnostic  
+        - style
+        - performance
+    cyclop:
+      max-complexity: 15
+    lll:
+      line-length: 125
+  exclusions:
+    paths:
+      - migrations
+      - scripts
+      - venv
+      - .github
+      - ".*_generated\\.go$"  # Exclude generated files from formatting
+    rules:
+      # Exclude some linters from running on tests files.
+      - path: _test\.go
+        linters:
+          - dupl
+
+formatters:
+  enable:
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:  # Helps sort local imports
+        - github.com/rodruizronald/ticos-in-tech
+  exclusions:
+    paths:
+      - migrations
+      - scripts
+      - venv
+      - .github
+      - ".*_generated\\.go$"  # Exclude generated files from formatting
+
+issues:
+  # Max issues per linter / same issues (0 for unlimited)
+  max-issues-per-linter: 0
+  max-same-issues: 0

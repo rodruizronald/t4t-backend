@@ -1,0 +1,170 @@
+basePath: /api/v1
+definitions:
+  jobs.ErrorDetails:
+    properties:
+      code:
+        type: string
+      details:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+  jobs.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/jobs.ErrorDetails'
+    type: object
+  jobs.JobResponse:
+    properties:
+      application_url:
+        type: string
+      company_id:
+        type: integer
+      company_logo_url:
+        type: string
+      company_name:
+        type: string
+      description:
+        type: string
+      employment_type:
+        type: string
+      experience_level:
+        type: string
+      job_id:
+        type: integer
+      location:
+        type: string
+      posted_at:
+        type: string
+      technologies:
+        items:
+          $ref: '#/definitions/jobs.TechnologyResponse'
+        type: array
+      title:
+        type: string
+      work_mode:
+        type: string
+    type: object
+  jobs.PaginationDetails:
+    properties:
+      has_more:
+        type: boolean
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
+  jobs.SearchResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/jobs.JobResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/jobs.PaginationDetails'
+    type: object
+  jobs.TechnologyResponse:
+    properties:
+      category:
+        type: string
+      name:
+        type: string
+      required:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: A job board API for managing job postings
+  title: Job Board API
+  version: "1.0"
+paths:
+  /jobs:
+    get:
+      consumes:
+      - application/json
+      description: Search for jobs with optional filters and pagination
+      parameters:
+      - description: Search query
+        example: '"golang developer"'
+        in: query
+        name: q
+        required: true
+        type: string
+      - default: 20
+        description: Number of results to return (max 100)
+        example: 20
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Number of results to skip
+        example: 0
+        in: query
+        name: offset
+        type: integer
+      - description: Experience level filter
+        in: query
+        name: experience_level
+        type: string
+      - description: Employment type filter
+        in: query
+        name: employment_type
+        type: string
+      - description: Location filter
+        enum:
+        - Costa Rica
+        - LATAM
+        example: '"Costa Rica"'
+        in: query
+        name: location
+        type: string
+      - description: Work mode filter
+        enum:
+        - Remote
+        - Hybrid
+        - Onsite
+        example: '"Remote"'
+        in: query
+        name: work_mode
+        type: string
+      - description: Company name filter (partial match)
+        example: '"Tech Corp"'
+        in: query
+        name: company
+        type: string
+      - description: Start date filter (YYYY-MM-DD)
+        example: '"2024-01-01"'
+        in: query
+        name: date_from
+        type: string
+      - description: End date filter (YYYY-MM-DD)
+        example: '"2024-12-31"'
+        in: query
+        name: date_to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/jobs.SearchResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/jobs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/jobs.ErrorResponse'
+      summary: Search for jobs
+      tags:
+      - jobs
+swagger: "2.0"
