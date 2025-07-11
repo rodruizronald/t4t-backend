@@ -13,6 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/rodruizronald/ticos-in-tech/internal/company"
+	"github.com/rodruizronald/ticos-in-tech/internal/config"
 	"github.com/rodruizronald/ticos-in-tech/internal/database"
 )
 
@@ -50,11 +51,15 @@ func run(ctx context.Context) error {
 	}
 	log.Infof("Loaded %d companies from JSON file", len(companies))
 
-	// Get database config
-	dbConfig := database.DefaultConfig()
+	// Load configuration
+	cfg, err := config.Load()
+	if err != nil {
+		log.Errorf("failed to load configuration: %v", err)
+		return err
+	}
 
-	// Connect to the database
-	dbpool, err := database.Connect(ctx, &dbConfig)
+	// Connect to the database using config
+	dbpool, err := database.Connect(ctx, &cfg.Database)
 	if err != nil {
 		log.Errorf("Unable to connect to database: %v", err)
 		return err
