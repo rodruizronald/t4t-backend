@@ -19,6 +19,7 @@ import (
 	_ "github.com/rodruizronald/ticos-in-tech/docs"
 	"github.com/rodruizronald/ticos-in-tech/internal/config"
 	"github.com/rodruizronald/ticos-in-tech/internal/database"
+	"github.com/rodruizronald/ticos-in-tech/internal/devmocks"
 	"github.com/rodruizronald/ticos-in-tech/internal/jobs"
 	"github.com/rodruizronald/ticos-in-tech/internal/jobtech"
 	"github.com/rodruizronald/ticos-in-tech/internal/logger"
@@ -45,7 +46,7 @@ func main() {
 // setupJobRepositories creates the appropriate job repositories based on Gin mode
 func setupJobRepositories(ctx context.Context, cfg *config.Config) (jobs.DataRepository, func(), error) {
 	if cfg.Gin.Mode == gin.TestMode {
-		return nil, func() {}, nil
+		return devmocks.NewJobRepository(), func() {}, nil
 	}
 
 	// Connect to the database using config
@@ -80,7 +81,7 @@ func run(ctx context.Context) int {
 	defer cleanup()
 
 	// Create router
-	appRouter := router.New(jobRepos)
+	appRouter := router.New(jobRepos, log)
 	r := appRouter.Setup(&cfg.Gin)
 
 	// Create and start server
