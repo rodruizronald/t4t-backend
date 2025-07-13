@@ -13,6 +13,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	"github.com/rodruizronald/ticos-in-tech/internal/config"
 	"github.com/rodruizronald/ticos-in-tech/internal/database"
 	"github.com/rodruizronald/ticos-in-tech/internal/techalias"
 	"github.com/rodruizronald/ticos-in-tech/internal/technology"
@@ -46,15 +47,18 @@ func run(ctx context.Context) error {
 		FullTimestamp: true,
 	})
 
-	// Get database config
-	dbConfig := database.DefaultConfig()
+	/// Load configuration
+	cfg, err := config.Load()
+	if err != nil {
+		log.Errorf("failed to load configuration: %v", err)
+		return err
+	}
 
-	log.Infof("Connecting to database %s at %s:%d", dbConfig.DBName, dbConfig.Host, dbConfig.Port)
-
-	// Connect to the database
-	dbpool, err := database.Connect(ctx, &dbConfig)
+	// Connect to the database using config
+	dbpool, err := database.Connect(ctx, &cfg.Database)
 	if err != nil {
 		log.Errorf("Unable to connect to database: %v", err)
+		return err
 	}
 	defer dbpool.Close()
 

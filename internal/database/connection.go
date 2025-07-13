@@ -7,41 +7,21 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/rodruizronald/ticos-in-tech/internal/config"
 )
 
-// Config holds the configuration for the database connection.
-type Config struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
-}
-
-// DefaultConfig returns a default configuration for local development.
-func DefaultConfig() Config {
-	return Config{
-		Host:     "localhost",
-		Port:     5432,
-		User:     "postgres",
-		Password: "postgres",
-		DBName:   "marketplace",
-		SSLMode:  "disable",
-	}
-}
-
 // ConnectionString returns a PostgreSQL connection string based on the configuration.
-func (c *Config) ConnectionString() string {
+func ConnectionString(cfg *config.DatabaseConfig) string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
-		c.User, c.Password, c.Host, c.Port, c.DBName, c.SSLMode,
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode,
 	)
 }
 
 // Connect establishes a connection to the PostgreSQL database.
-func Connect(ctx context.Context, config *Config) (*pgxpool.Pool, error) {
-	connString := config.ConnectionString()
+func Connect(ctx context.Context, cfg *config.DatabaseConfig) (*pgxpool.Pool, error) {
+	connString := ConnectionString(cfg)
 
 	poolConfig, err := pgxpool.ParseConfig(connString)
 	if err != nil {

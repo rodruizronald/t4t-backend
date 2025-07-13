@@ -18,6 +18,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/rodruizronald/ticos-in-tech/internal/company"
+	"github.com/rodruizronald/ticos-in-tech/internal/config"
 	"github.com/rodruizronald/ticos-in-tech/internal/database"
 	"github.com/rodruizronald/ticos-in-tech/internal/jobs"
 	"github.com/rodruizronald/ticos-in-tech/internal/jobtech"
@@ -103,15 +104,20 @@ func run(ctx context.Context) error {
 
 // setupDatabase initializes the database connection and repositories
 func setupDatabase(ctx context.Context, log *logrus.Logger) (*pgxpool.Pool, *repositories, error) {
-	// Get database config
-	dbConfig := database.DefaultConfig()
+	// Load configuration
+	cfg, err := config.Load()
+	if err != nil {
+		log.Errorf("failed to load configuration: %v", err)
+		return nil, nil, err
+	}
 
-	// Connect to the database
-	dbpool, err := database.Connect(ctx, &dbConfig)
+	// Connect to the database using config
+	dbpool, err := database.Connect(ctx, &cfg.Database)
 	if err != nil {
 		log.Errorf("Unable to connect to database: %v", err)
 		return nil, nil, err
 	}
+	defer dbpool.Close()
 
 	// Create repositories
 	repos := &repositories{
