@@ -26,7 +26,7 @@ docs:
 	@echo "Generating swagger documentation..."
 	@swag init \
 		-g main.go \
-		-d ./cmd/server,\
+		-d .,\
 ./internal/jobs,\
 ./internal/company,\
 ./internal/technology,\
