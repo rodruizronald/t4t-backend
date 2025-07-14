@@ -77,12 +77,12 @@ func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
 // @Param q query string true "Search query" example("golang developer")
 // @Param limit query int false "Number of results to return (max 100)" default(20) example(20)
 // @Param offset query int false "Number of results to skip" default(0) example(0)
-// @Param experience_level query string false "Experience level filter" \
-// Enums(Entry-level,Junior,Mid-level,Senior,Lead,Principal,Executive) example("Senior")
-// @Param employment_type query string false "Employment type filter" \
-// Enums(Full-time,Part-time,Contract,Freelance,Temporary,Internship) example("Full-time")
-// @Param location query string false "Location filter" Enums(Costa Rica,LATAM) example("Costa Rica")
-// @Param work_mode query string false "Work mode filter" Enums(Remote,Hybrid,Onsite) example("Remote")
+// @Param experience query string false "Experience level filter" \
+// Enums(entry-level,mid-level,senior,manager,director,executive) example("senior")
+// @Param type query string false "Employment type filter" \
+// Enums(full-time,part-time,contractor,temporary,internship) example("full-time")
+// @Param location query string false "Location filter" Enums(costarica,latam) example("costarica")
+// @Param mode query string false "Work mode filter" Enums(remote,hybrid,onsite) example("remote")
 // @Param company query string false "Company name filter (partial match)" example("Tech Corp")
 // @Param date_from query string false "Start date filter (YYYY-MM-DD)" example("2024-01-01")
 // @Param date_to query string false "End date filter (YYYY-MM-DD)" example("2024-12-31")
