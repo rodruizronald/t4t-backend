@@ -3,33 +3,45 @@
 package router
 
 import (
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/rodruizronald/ticos-in-tech/internal/config"
 	"github.com/rodruizronald/ticos-in-tech/internal/jobs"
+	"github.com/rodruizronald/ticos-in-tech/internal/logger"
+)
+
+const (
+	componentName = "router"
 )
 
 // Router handles HTTP routing and middleware setup
 type Router struct {
 	jobRepos jobs.DataRepository
+	logger   logrus.FieldLogger
 }
 
 // New creates a new Router instance with dependencies
-func New(jobRepos jobs.DataRepository) *Router {
+func New(jobRepos jobs.DataRepository, log *logrus.Logger) *Router {
 	return &Router{
 		jobRepos: jobRepos,
+		logger:   logger.WithComponent(log, componentName),
 	}
 }
 
 // Setup configures and returns a Gin engine with all middleware and routes
 func (r *Router) Setup(cfg *config.GinConfig) *gin.Engine {
-	engine := gin.Default()
 	gin.SetMode(cfg.Mode)
+	engine := gin.Default()
+
+	// Log the Gin mode being used
+	r.logger.Infof("Gin engine configured in %s mode", strings.ToUpper(gin.Mode()))
 
 	r.setupMiddleware(engine)
 	r.setupRoutes(engine)

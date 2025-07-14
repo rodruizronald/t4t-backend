@@ -1,0 +1,282 @@
+{
+  "jobs": [
+    {
+      "id": 1,
+      "company_id": 1,
+      "title": "Senior Software Engineer",
+      "original_post": "https://techcorp.com/careers/senior-engineer-original",
+      "description": "We are looking for a Senior Software Engineer to join our team. You will be responsible for developing scalable web applications using modern technologies.",
+      "responsibilities": [
+        "Design and develop scalable web applications",
+        "Collaborate with cross-functional teams",
+        "Mentor junior developers",
+        "Code review and maintain high code quality"
+      ],
+      "skill_must_have": [
+        "5+ years of Go programming experience",
+        "Experience with PostgreSQL",
+        "Strong understanding of microservices architecture",
+        "Experience with REST APIs"
+      ],
+      "skill_nice_to_have": [
+        "Experience with Docker and Kubernetes",
+        "Knowledge of cloud platforms (AWS/GCP)",
+        "Experience with GraphQL"
+      ],
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Remote work flexibility",
+        "Professional development budget"
+      ],
+      "experience_level": "Senior",
+      "employment_type": "Full-Time",
+      "location": "San José, Costa Rica",
+      "work_mode": "Hybrid",
+      "application_url": "https://techcorp.com/careers/senior-engineer",
+      "is_active": true,
+      "signature": "techcorp-senior-engineer-1",
+      "days_ago": 5,
+      "company_name": "TechCorp",
+      "company_logo_url": "https://example.com/techcorp-logo.png"
+    },
+    {
+      "id": 2,
+      "company_id": 2,
+      "title": "Frontend Developer",
+      "original_post": "https://startupxyz.com/jobs/frontend-dev-original",
+      "description": "Join our startup as a Frontend Developer. You'll work with React, TypeScript, and modern CSS frameworks to build amazing user experiences.",
+      "responsibilities": [
+        "Build responsive user interfaces with React",
+        "Implement modern CSS frameworks",
+        "Collaborate with UX/UI designers",
+        "Optimize application performance"
+      ],
+      "skill_must_have": [
+        "3+ years of React experience",
+        "Strong TypeScript skills",
+        "Experience with modern CSS frameworks",
+        "Understanding of responsive design"
+      ],
+      "skill_nice_to_have": [
+        "Experience with Next.js",
+        "Knowledge of testing frameworks (Jest, Cypress)",
+        "Familiarity with design systems"
+      ],
+      "benefits": [
+        "Startup equity",
+        "Flexible working hours",
+        "Learning and development opportunities",
+        "Modern tech stack"
+      ],
+      "experience_level": "Mid-Level",
+      "employment_type": "Full-Time",
+      "location": "Remote",
+      "work_mode": "Remote",
+      "application_url": "https://startupxyz.com/jobs/frontend-dev",
+      "is_active": true,
+      "signature": "startupxyz-frontend-dev-2",
+      "days_ago": 3,
+      "company_name": "StartupXYZ",
+      "company_logo_url": "https://example.com/startupxyz-logo.png"
+    },
+    {
+      "id": 3,
+      "company_id": 3,
+      "title": "Data Engineer",
+      "original_post": "https://datasolutions.com/careers/data-engineer-original",
+      "description": "We need a Data Engineer to build and maintain our data pipelines. Experience with Python, Apache Spark, and cloud platforms is required.",
+      "responsibilities": [
+        "Design and implement data pipelines",
+        "Maintain data infrastructure",
+        "Optimize data processing workflows",
+        "Collaborate with data scientists"
+      ],
+      "skill_must_have": [
+        "Strong Python programming skills",
+        "Experience with Apache Spark",
+        "SQL database expertise",
+        "ETL/ELT pipeline experience"
+      ],
+      "skill_nice_to_have": [
+        "AWS/GCP cloud platform experience",
+        "Knowledge of Kafka or similar streaming platforms",
+        "Experience with data visualization tools"
+      ],
+      "benefits": [
+        "Competitive salary package",
+        "Health and dental insurance",
+        "Annual bonus",
+        "Conference attendance budget"
+      ],
+      "experience_level": "Senior",
+      "employment_type": "Full-Time",
+      "location": "Cartago, Costa Rica",
+      "work_mode": "On-Site",
+      "application_url": "https://datasolutions.com/careers/data-engineer",
+      "is_active": true,
+      "signature": "datasolutions-data-engineer-3",
+      "days_ago": 7,
+      "company_name": "DataSolutions",
+      "company_logo_url": "https://example.com/datasolutions-logo.png"
+    },
+    {
+      "id": 4,
+      "company_id": 1,
+      "title": "Junior Full Stack Developer",
+      "original_post": "https://techcorp.com/careers/junior-fullstack-original",
+      "description": "Great opportunity for a Junior Full Stack Developer to grow with our team. You'll work with Node.js, React, and learn from senior developers.",
+      "responsibilities": [
+        "Develop full-stack web applications",
+        "Learn from senior team members",
+        "Participate in code reviews",
+        "Write unit and integration tests"
+      ],
+      "skill_must_have": [
+        "Basic knowledge of Node.js",
+        "Understanding of React fundamentals",
+        "HTML, CSS, and JavaScript proficiency",
+        "Git version control experience"
+      ],
+      "skill_nice_to_have": [
+        "Experience with MongoDB",
+        "Basic understanding of REST APIs",
+        "Familiarity with testing frameworks"
+      ],
+      "benefits": [
+        "Mentorship program",
+        "Health insurance",
+        "Flexible work arrangements",
+        "Career growth opportunities"
+      ],
+      "experience_level": "Entry-Level",
+      "employment_type": "Full-Time",
+      "location": "San José, Costa Rica",
+      "work_mode": "Hybrid",
+      "application_url": "https://techcorp.com/careers/junior-fullstack",
+      "is_active": true,
+      "signature": "techcorp-junior-fullstack-4",
+      "days_ago": 2,
+      "company_name": "TechCorp",
+      "company_logo_url": "https://example.com/techcorp-logo.png"
+    },
+    {
+      "id": 5,
+      "company_id": 4,
+      "title": "DevOps Engineer",
+      "original_post": "https://cloudtech.com/jobs/devops-engineer-original",
+      "description": "Looking for a DevOps Engineer to manage our cloud infrastructure. Experience with AWS, Terraform, and CI/CD pipelines is essential.",
+      "responsibilities": [
+        "Manage cloud infrastructure on AWS",
+        "Implement CI/CD pipelines",
+        "Monitor system performance and reliability",
+        "Automate deployment processes"
+      ],
+      "skill_must_have": [
+        "AWS cloud platform expertise",
+        "Terraform infrastructure as code",
+        "Docker containerization",
+        "CI/CD pipeline experience"
+      ],
+      "skill_nice_to_have": [
+        "Kubernetes orchestration",
+        "Jenkins or GitLab CI experience",
+        "Monitoring tools (Prometheus, Grafana)"
+      ],
+      "benefits": [
+        "Competitive salary",
+        "AWS certification support",
+        "Remote work options",
+        "Tech conference attendance"
+      ],
+      "experience_level": "Mid-Level",
+      "employment_type": "Full-Time",
+      "location": "Heredia, Costa Rica",
+      "work_mode": "Hybrid",
+      "application_url": "https://cloudtech.com/jobs/devops-engineer",
+      "is_active": true,
+      "signature": "cloudtech-devops-engineer-5",
+      "days_ago": 4,
+      "company_name": "CloudTech",
+      "company_logo_url": "https://example.com/cloudtech-logo.png"
+    },
+    {
+      "id": 6,
+      "company_id": 5,
+      "title": "Mobile App Developer",
+      "original_post": "https://mobilefirst.com/careers/mobile-dev-original",
+      "description": "Join our mobile team to build cross-platform applications using React Native. Experience with iOS and Android development is a plus.",
+      "responsibilities": [
+        "Develop cross-platform mobile applications",
+        "Implement native mobile features",
+        "Optimize app performance",
+        "Collaborate with product and design teams"
+      ],
+      "skill_must_have": [
+        "React Native development experience",
+        "JavaScript/TypeScript proficiency",
+        "Mobile app deployment experience",
+        "Understanding of mobile UI/UX principles"
+      ],
+      "skill_nice_to_have": [
+        "Native iOS (Swift) development",
+        "Native Android (Kotlin) development",
+        "Firebase integration experience"
+      ],
+      "benefits": [
+        "Contract flexibility",
+        "Remote work",
+        "Project-based bonuses",
+        "Latest mobile devices for testing"
+      ],
+      "experience_level": "Mid-Level",
+      "employment_type": "Contract",
+      "location": "Remote",
+      "work_mode": "Remote",
+      "application_url": "https://mobilefirst.com/careers/mobile-dev",
+      "is_active": true,
+      "signature": "mobilefirst-mobile-dev-6",
+      "days_ago": 6,
+      "company_name": "MobileFirst",
+      "company_logo_url": "https://example.com/mobilefirst-logo.png"
+    }
+  ],
+  "technologies": {
+    "1": [
+      {"job_id": 1, "technology_id": 1, "tech_name": "Go", "tech_category": "Programming Language", "is_required": true},
+      {"job_id": 1, "technology_id": 2, "tech_name": "PostgreSQL", "tech_category": "Database", "is_required": true},
+      {"job_id": 1, "technology_id": 3, "tech_name": "Docker", "tech_category": "DevOps", "is_required": false},
+      {"job_id": 1, "technology_id": 4, "tech_name": "Kubernetes", "tech_category": "DevOps", "is_required": false}
+    ],
+    "2": [
+      {"job_id": 2, "technology_id": 5, "tech_name": "React", "tech_category": "Frontend Framework", "is_required": true},
+      {"job_id": 2, "technology_id": 6, "tech_name": "TypeScript", "tech_category": "Programming Language", "is_required": true},
+      {"job_id": 2, "technology_id": 7, "tech_name": "CSS", "tech_category": "Styling", "is_required": true},
+      {"job_id": 2, "technology_id": 8, "tech_name": "Jest", "tech_category": "Testing", "is_required": false}
+    ],
+    "3": [
+      {"job_id": 3, "technology_id": 9, "tech_name": "Python", "tech_category": "Programming Language", "is_required": true},
+      {"job_id": 3, "technology_id": 10, "tech_name": "Apache Spark", "tech_category": "Big Data", "is_required": true},
+      {"job_id": 3, "technology_id": 11, "tech_name": "AWS", "tech_category": "Cloud Platform", "is_required": false},
+      {"job_id": 3, "technology_id": 12, "tech_name": "SQL", "tech_category": "Database", "is_required": true}
+    ],
+    "4": [
+      {"job_id": 4, "technology_id": 13, "tech_name": "Node.js", "tech_category": "Runtime", "is_required": true},
+      {"job_id": 4, "technology_id": 5, "tech_name": "React", "tech_category": "Frontend Framework", "is_required": true},
+      {"job_id": 4, "technology_id": 14, "tech_name": "MongoDB", "tech_category": "Database", "is_required": false},
+      {"job_id": 4, "technology_id": 15, "tech_name": "Express.js", "tech_category": "Backend Framework", "is_required": true}
+    ],
+    "5": [
+      {"job_id": 5, "technology_id": 11, "tech_name": "AWS", "tech_category": "Cloud Platform", "is_required": true},
+      {"job_id": 5, "technology_id": 16, "tech_name": "Terraform", "tech_category": "Infrastructure as Code", "is_required": true},
+      {"job_id": 5, "technology_id": 3, "tech_name": "Docker", "tech_category": "DevOps", "is_required": true},
+      {"job_id": 5, "technology_id": 17, "tech_name": "Jenkins", "tech_category": "CI/CD", "is_required": false}
+    ],
+    "6": [
+      {"job_id": 6, "technology_id": 18, "tech_name": "React Native", "tech_category": "Mobile Framework", "is_required": true},
+      {"job_id": 6, "technology_id": 19, "tech_name": "Swift", "tech_category": "Programming Language", "is_required": false},
+      {"job_id": 6, "technology_id": 20, "tech_name": "Kotlin", "tech_category": "Programming Language", "is_required": false},
+      {"job_id": 6, "technology_id": 21, "tech_name": "Firebase", "tech_category": "Backend as a Service", "is_required": false}
+    ]
+  }
+}
