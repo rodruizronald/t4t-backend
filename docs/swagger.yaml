@@ -132,28 +132,28 @@ paths:
         type: integer
       - description: Experience level filter
         in: query
-        name: experience_level
+        name: experience
         type: string
       - description: Employment type filter
         in: query
-        name: employment_type
+        name: type
         type: string
       - description: Location filter
         enum:
-        - Costa Rica
-        - LATAM
-        example: '"Costa Rica"'
+        - costarica
+        - latam
+        example: '"costarica"'
         in: query
         name: location
         type: string
       - description: Work mode filter
         enum:
-        - Remote
-        - Hybrid
-        - Onsite
-        example: '"Remote"'
+        - remote
+        - hybrid
+        - onsite
+        example: '"remote"'
         in: query
-        name: work_mode
+        name: mode
         type: string
       - description: Company name filter (partial match)
         example: '"Tech Corp"'
