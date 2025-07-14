@@ -258,6 +258,7 @@ type JobResponse struct {
 	PostedAt         time.Time               `json:"posted_at"`
 }
 
+// JobRequirementsResponse represents the requirements section of a job posting
 type JobRequirementsResponse struct {
 	MustHave   []string `json:"must_have"`
 	NiceToHave []string `json:"nice_to_have"`
