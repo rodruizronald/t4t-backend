@@ -162,11 +162,34 @@ const docTemplate = `{
                 }
             }
         },
+        "jobs.JobRequirementsResponse": {
+            "type": "object",
+            "properties": {
+                "must_have": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "nice_to_have": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "jobs.JobResponse": {
             "type": "object",
             "properties": {
                 "application_url": {
                     "type": "string"
+                },
+                "benefits": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "company_id": {
                     "type": "integer"
@@ -194,6 +217,15 @@ const docTemplate = `{
                 },
                 "posted_at": {
                     "type": "string"
+                },
+                "requirements": {
+                    "$ref": "#/definitions/jobs.JobRequirementsResponse"
+                },
+                "responsibilities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "technologies": {
                     "type": "array",
