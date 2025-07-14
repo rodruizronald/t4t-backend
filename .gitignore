@@ -3,6 +3,9 @@ venv/
 __pycache__/
 **/data/
 
+# Allow devmocks data for embedded files
+!internal/devmocks/data/
+
 # Node.js dependencies
 node_modules/
 **/node_modules/
