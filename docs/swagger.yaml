@@ -16,10 +16,25 @@ definitions:
       error:
         $ref: '#/definitions/jobs.ErrorDetails'
     type: object
+  jobs.JobRequirementsResponse:
+    properties:
+      must_have:
+        items:
+          type: string
+        type: array
+      nice_to_have:
+        items:
+          type: string
+        type: array
+    type: object
   jobs.JobResponse:
     properties:
       application_url:
         type: string
+      benefits:
+        items:
+          type: string
+        type: array
       company_id:
         type: integer
       company_logo_url:
@@ -38,6 +53,12 @@ definitions:
         type: string
       posted_at:
         type: string
+      requirements:
+        $ref: '#/definitions/jobs.JobRequirementsResponse'
+      responsibilities:
+        items:
+          type: string
+        type: array
       technologies:
         items:
           $ref: '#/definitions/jobs.TechnologyResponse'
