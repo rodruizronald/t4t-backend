@@ -2,6 +2,8 @@ package jobs
 
 import (
 	"time"
+
+	"github.com/lib/pq"
 )
 
 // Database entities and repository-level structs for job management.
@@ -10,19 +12,24 @@ import (
 
 // Job represents the database entity
 type Job struct {
-	ID              int       `db:"id"`
-	CompanyID       int       `db:"company_id"`
-	Title           string    `db:"title"`
-	Description     string    `db:"description"`
-	ExperienceLevel string    `db:"experience_level"`
-	EmploymentType  string    `db:"employment_type"`
-	Location        string    `db:"location"`
-	WorkMode        string    `db:"work_mode"`
-	ApplicationURL  string    `db:"application_url"`
-	IsActive        bool      `db:"is_active"`
-	Signature       string    `db:"signature"`
-	CreatedAt       time.Time `db:"created_at"`
-	UpdatedAt       time.Time `db:"updated_at"`
+	ID               int            `db:"id"`
+	CompanyID        int            `db:"company_id"`
+	Title            string         `db:"title"`
+	OriginalPost     string         `db:"original_post"`
+	Description      string         `db:"description"`
+	Responsibilities pq.StringArray `db:"responsibilities"`
+	SkillMustHave    pq.StringArray `db:"skill_must_have"`
+	SkillNiceToHave  pq.StringArray `db:"skill_nice_to_have"`
+	Benefits         pq.StringArray `db:"benefits"`
+	ExperienceLevel  string         `db:"experience_level"`
+	EmploymentType   string         `db:"employment_type"`
+	Location         string         `db:"location"`
+	WorkMode         string         `db:"work_mode"`
+	ApplicationURL   string         `db:"application_url"`
+	IsActive         bool           `db:"is_active"`
+	Signature        string         `db:"signature"`
+	CreatedAt        time.Time      `db:"created_at"`
+	UpdatedAt        time.Time      `db:"updated_at"`
 }
 
 // JobWithCompany represents a job with company details (for read operations only)

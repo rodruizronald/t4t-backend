@@ -12,48 +12,44 @@ import (
 // Constants for job attributes and values
 const (
 	// Experience levels
-	experienceLevelEntry     = "Entry-level"
-	experienceLevelJunior    = "Junior"
-	experienceLevelMid       = "Mid-level"
-	experienceLevelSenior    = "Senior"
-	experienceLevelLead      = "Lead"
-	experienceLevelPrincipal = "Principal"
-	experienceLevelExecutive = "Executive"
+	experienceLevelEntry     = "entry-level"
+	experienceLevelMid       = "mid-level"
+	experienceLevelSenior    = "senior"
+	experienceLevelManager   = "manager"
+	experienceLevelDirector  = "director"
+	experienceLevelExecutive = "executive"
 
 	// Employment types
-	employmentTypeFullTime   = "Full-time"
-	employmentTypePartTime   = "Part-time"
-	employmentTypeContract   = "Contract"
-	employmentTypeFreelance  = "Freelance"
-	employmentTypeTemporary  = "Temporary"
-	employmentTypeInternship = "Internship"
+	employmentTypeFullTime   = "full-time"
+	employmentTypePartTime   = "part-time"
+	employmentTypeContractor = "contractor"
+	employmentTypeTemporary  = "temporary"
+	employmentTypeInternship = "internship"
 
 	// Locations
-	locationCostaRica = "Costa Rica"
-	locationLATAM     = "LATAM"
+	locationCostaRica = "costarica"
+	locationLATAM     = "latam"
 
 	// Work modes
-	workModeRemote = "Remote"
-	workModeHybrid = "Hybrid"
-	workModeOnsite = "Onsite"
+	workModeRemote = "remote"
+	workModeHybrid = "hybrid"
+	workModeOnsite = "onsite"
 )
 
 // Validation collections for job attributes and values
 var (
 	validExperienceLevels = []string{
 		experienceLevelEntry,
-		experienceLevelJunior,
 		experienceLevelMid,
 		experienceLevelSenior,
-		experienceLevelLead,
-		experienceLevelPrincipal,
+		experienceLevelManager,
+		experienceLevelDirector,
 		experienceLevelExecutive,
 	}
 	validEmploymentTypes = []string{
 		employmentTypeFullTime,
 		employmentTypePartTime,
-		employmentTypeContract,
-		employmentTypeFreelance,
+		employmentTypeContractor,
 		employmentTypeTemporary,
 		employmentTypeInternship,
 	}
@@ -84,10 +80,10 @@ type SearchRequest struct {
 	Query           string `form:"q" binding:"required" example:"golang developer"`
 	Limit           int    `form:"limit" example:"20"`
 	Offset          int    `form:"offset" example:"0"`
-	ExperienceLevel string `form:"experience_level" example:"Senior"`
-	EmploymentType  string `form:"employment_type" example:"Full-time"`
+	ExperienceLevel string `form:"experience" example:"Senior"`
+	EmploymentType  string `form:"type" example:"Full-time"`
 	Location        string `form:"location" example:"Costa Rica"`
-	WorkMode        string `form:"work_mode" example:"Remote"`
+	WorkMode        string `form:"mode" example:"Remote"`
 	Company         string `form:"company" example:"Tech Corp"`
 	DateFrom        string `form:"date_from" example:"2024-01-01"`
 	DateTo          string `form:"date_to" example:"2024-12-31"`
@@ -244,19 +240,27 @@ func (req *SearchRequest) validateDateRange(errors *[]string) {
 
 // JobResponse represents the API response for a single job
 type JobResponse struct {
-	ID              int                  `json:"job_id"`
-	CompanyID       int                  `json:"company_id"`
-	CompanyName     string               `json:"company_name"`
-	CompanyLogoURL  string               `json:"company_logo_url"`
-	Title           string               `json:"title"`
-	Description     string               `json:"description"`
-	ExperienceLevel string               `json:"experience_level"`
-	EmploymentType  string               `json:"employment_type"`
-	Location        string               `json:"location"`
-	WorkMode        string               `json:"work_mode"`
-	ApplicationURL  string               `json:"application_url"`
-	Technologies    []TechnologyResponse `json:"technologies"`
-	PostedAt        time.Time            `json:"posted_at"`
+	ID               int                     `json:"job_id"`
+	CompanyID        int                     `json:"company_id"`
+	CompanyName      string                  `json:"company_name"`
+	CompanyLogoURL   string                  `json:"company_logo_url"`
+	Title            string                  `json:"title"`
+	Description      string                  `json:"description"`
+	Responsibilities []string                `json:"responsibilities"`
+	Requirements     JobRequirementsResponse `json:"requirements"`
+	Benefits         []string                `json:"benefits"`
+	ExperienceLevel  string                  `json:"experience_level"`
+	EmploymentType   string                  `json:"employment_type"`
+	Location         string                  `json:"location"`
+	WorkMode         string                  `json:"work_mode"`
+	ApplicationURL   string                  `json:"application_url"`
+	Technologies     []TechnologyResponse    `json:"technologies"`
+	PostedAt         time.Time               `json:"posted_at"`
+}
+
+type JobRequirementsResponse struct {
+	MustHave   []string `json:"must_have"`
+	NiceToHave []string `json:"nice_to_have"`
 }
 
 // TechnologyResponse represents the API response for job technologies

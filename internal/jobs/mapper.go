@@ -11,12 +11,18 @@ import "github.com/rodruizronald/ticos-in-tech/internal/jobtech"
 // It transforms a database model into a DTO suitable for API responses.
 func MapJobToResponse(job *JobWithCompany, technologies []TechnologyResponse) *JobResponse {
 	return &JobResponse{
-		ID:              job.ID,
-		CompanyID:       job.CompanyID,
-		CompanyName:     job.CompanyName,
-		CompanyLogoURL:  job.CompanyLogoURL,
-		Title:           job.Title,
-		Description:     job.Description,
+		ID:               job.ID,
+		CompanyID:        job.CompanyID,
+		CompanyName:      job.CompanyName,
+		CompanyLogoURL:   job.CompanyLogoURL,
+		Title:            job.Title,
+		Description:      job.Description,
+		Responsibilities: job.Responsibilities,
+		Requirements: JobRequirementsResponse{
+			MustHave:   job.SkillMustHave,
+			NiceToHave: job.SkillNiceToHave,
+		},
+		Benefits:        job.Benefits,
 		ExperienceLevel: job.ExperienceLevel,
 		EmploymentType:  job.EmploymentType,
 		Location:        job.Location,
