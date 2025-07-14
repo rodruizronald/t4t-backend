@@ -59,36 +59,36 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Experience level filter",
-                        "name": "experience_level",
+                        "name": "experience",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "Employment type filter",
-                        "name": "employment_type",
+                        "name": "type",
                         "in": "query"
                     },
                     {
                         "enum": [
-                            "Costa Rica",
-                            "LATAM"
+                            "costarica",
+                            "latam"
                         ],
                         "type": "string",
-                        "example": "\"Costa Rica\"",
+                        "example": "\"costarica\"",
                         "description": "Location filter",
                         "name": "location",
                         "in": "query"
                     },
                     {
                         "enum": [
-                            "Remote",
-                            "Hybrid",
-                            "Onsite"
+                            "remote",
+                            "hybrid",
+                            "onsite"
                         ],
                         "type": "string",
-                        "example": "\"Remote\"",
+                        "example": "\"remote\"",
                         "description": "Work mode filter",
-                        "name": "work_mode",
+                        "name": "mode",
                         "in": "query"
                     },
                     {
