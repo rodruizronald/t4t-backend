@@ -16,6 +16,7 @@ const (
 
 // DataRepository interface to make database operations for the Job model.
 type DataRepository interface {
+	GetSearchCount(ctx context.Context, params *SearchParams) (int, error)
 	SearchJobsWithCount(ctx context.Context, params *SearchParams) ([]*JobWithCompany, int, error)
 	GetJobTechnologiesBatch(ctx context.Context, jobIDs []int) (map[int][]*jobtech.JobTechnologyWithDetails, error)
 }
@@ -24,6 +25,11 @@ type DataRepository interface {
 type Repositories struct {
 	jobRepo     *Repository
 	jobtechRepo *jobtech.Repository
+}
+
+// GetSearchCount delegates to the job repository's GetSearchCount method
+func (r *Repositories) GetSearchCount(ctx context.Context, params *SearchParams) (int, error) {
+	return r.jobRepo.GetSearchCount(ctx, params)
 }
 
 // SearchJobsWithCount delegates to the job repository's SearchJobsWithCount method
