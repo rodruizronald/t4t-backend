@@ -38,7 +38,7 @@ linters:
       locale: US
     gocritic:
       enabled-tags:
-        - diagnostic  
+        - diagnostic
         - style
         - performance
     cyclop:
@@ -47,11 +47,12 @@ linters:
       line-length: 125
   exclusions:
     paths:
+      - docs
       - migrations
       - scripts
       - venv
       - .github
-      - ".*_generated\\.go$"  # Exclude generated files from formatting
+      - ".*_generated\\.go$" # Exclude generated files from formatting
     rules:
       # Exclude some linters from running on tests files.
       - path: _test\.go
@@ -63,15 +64,16 @@ formatters:
     - goimports
   settings:
     goimports:
-      local-prefixes:  # Helps sort local imports
+      local-prefixes: # Helps sort local imports
         - github.com/rodruizronald/ticos-in-tech
   exclusions:
     paths:
+      - docs
       - migrations
       - scripts
       - venv
       - .github
-      - ".*_generated\\.go$"  # Exclude generated files from formatting
+      - ".*_generated\\.go$" # Exclude generated files from formatting
 
 issues:
   # Max issues per linter / same issues (0 for unlimited)

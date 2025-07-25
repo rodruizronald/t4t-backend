@@ -97,67 +97,6 @@ func NewRepository(db Database) *Repository {
 	return &Repository{db: db}
 }
 
-// buildWhereConditions builds the WHERE conditions and arguments for search queries
-func (r *Repository) buildWhereConditions(params *SearchParams) (string, []any) {
-	// Trim whitespace from query
-	params.Query = strings.TrimSpace(params.Query)
-
-	whereConditions := []string{}
-	args := []any{params.Query}
-	argCount := 2 // Starting at 2 because $1 is the search query
-
-	// Add optional filters
-	if params.ExperienceLevel != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("j.experience_level = $%d", argCount))
-		args = append(args, *params.ExperienceLevel)
-		argCount++
-	}
-
-	if params.EmploymentType != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("j.employment_type = $%d", argCount))
-		args = append(args, *params.EmploymentType)
-		argCount++
-	}
-
-	if params.Location != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("j.location = $%d", argCount))
-		args = append(args, *params.Location)
-		argCount++
-	}
-
-	if params.WorkMode != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("j.work_mode = $%d", argCount))
-		args = append(args, *params.WorkMode)
-		argCount++
-	}
-
-	if params.Company != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("LOWER(c.name) LIKE LOWER($%d)", argCount))
-		args = append(args, "%"+*params.Company+"%")
-		argCount++
-	}
-
-	if params.DateFrom != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("j.created_at >= $%d", argCount))
-		args = append(args, *params.DateFrom)
-		argCount++
-	}
-
-	if params.DateTo != nil {
-		whereConditions = append(whereConditions, fmt.Sprintf("j.created_at <= $%d", argCount))
-		args = append(args, *params.DateTo)
-		argCount++
-	}
-
-	// Build additional WHERE clause
-	additionalWhere := ""
-	if len(whereConditions) > 0 {
-		additionalWhere = " AND " + strings.Join(whereConditions, " AND ")
-	}
-
-	return additionalWhere, args
-}
-
 // SearchJobsWithCount performs a full-text search and returns both results and total count
 func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchParams) ([]*JobWithCompany, int, error) {
 	// Build WHERE conditions and arguments
@@ -370,4 +309,66 @@ func (r *Repository) GetBySignature(ctx context.Context, signature string) (*Job
 	}
 
 	return job, nil
+}
+
+// buildWhereConditions builds the WHERE conditions and arguments for search queries
+//
+//nolint:gocritic
+func (r *Repository) buildWhereConditions(params *SearchParams) (string, []any) {
+	// Trim whitespace from query
+	params.Query = strings.TrimSpace(params.Query)
+
+	whereConditions := []string{}
+	args := []any{params.Query}
+	argCount := 2 // Starting at 2 because $1 is the search query
+
+	// Add optional filters
+	if params.ExperienceLevel != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("j.experience_level = $%d", argCount))
+		args = append(args, *params.ExperienceLevel)
+		argCount++
+	}
+
+	if params.EmploymentType != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("j.employment_type = $%d", argCount))
+		args = append(args, *params.EmploymentType)
+		argCount++
+	}
+
+	if params.Location != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("j.location = $%d", argCount))
+		args = append(args, *params.Location)
+		argCount++
+	}
+
+	if params.WorkMode != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("j.work_mode = $%d", argCount))
+		args = append(args, *params.WorkMode)
+		argCount++
+	}
+
+	if params.Company != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("LOWER(c.name) LIKE LOWER($%d)", argCount))
+		args = append(args, "%"+*params.Company+"%")
+		argCount++
+	}
+
+	if params.DateFrom != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("j.created_at >= $%d", argCount))
+		args = append(args, *params.DateFrom)
+		argCount++
+	}
+
+	if params.DateTo != nil {
+		whereConditions = append(whereConditions, fmt.Sprintf("j.created_at <= $%d", argCount))
+		args = append(args, *params.DateTo)
+	}
+
+	// Build additional WHERE clause
+	additionalWhere := ""
+	if len(whereConditions) > 0 {
+		additionalWhere = " AND " + strings.Join(whereConditions, " AND ")
+	}
+
+	return additionalWhere, args
 }

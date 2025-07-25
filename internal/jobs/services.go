@@ -42,6 +42,7 @@ func (s *SearchService) ExecuteSearch(ctx context.Context, params *SearchParams)
 	return searchResult, total, nil
 }
 
+// ExecuteSearchCount implements the SearchService interface to execute a count search
 func (s *SearchService) ExecuteSearchCount(ctx context.Context, params *SearchParams) (int, error) {
 	count, err := s.repos.GetSearchCount(ctx, params)
 	if err != nil {
