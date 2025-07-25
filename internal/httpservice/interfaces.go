@@ -27,6 +27,7 @@ type SearchResult interface {
 // SearchService handles business logic (domain layer concern) - THIS IS WHAT CONSUMERS MUST IMPLEMENT
 type SearchService[TParams SearchParams, TResult SearchResult] interface {
 	ExecuteSearch(ctx context.Context, params TParams) (TResult, int, error)
+	ExecuteSearchCount(ctx context.Context, params TParams) (int, error)
 }
 
 // RequestParser handles HTTP request parsing (HTTP layer concern) - WITH DEFAULT IMPLEMENTATION PROVIDED

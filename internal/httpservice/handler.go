@@ -75,3 +75,40 @@ func (h *SearchHandler[TRequest, TParams, TResult]) HandleSearch(c *gin.Context)
 	response := h.responseBuilder.BuildSearchResponse(results, total, searchParams.(TParams))
 	c.JSON(http.StatusOK, response)
 }
+
+// HandleSearchCount handles HTTP requests for count-only operations
+func (h *SearchHandler[TRequest, TParams, TResult]) HandleSearchCount(c *gin.Context) {
+    // Parse request using generic parser (same as HandleSearch)
+    req, err := h.parser.ParseSearchRequest(c)
+    if err != nil {
+        statusCode, errorResp := h.responseBuilder.BuildErrorResponse(err)
+        c.JSON(statusCode, errorResp)
+        return
+    }
+
+    // Validate request (same as HandleSearch)
+    if err = req.Validate(); err != nil {
+        statusCode, errorResp := h.responseBuilder.BuildErrorResponse(err)
+        c.JSON(statusCode, errorResp)
+        return
+    }
+
+    // Convert to search params (same as HandleSearch)
+    searchParams, err := req.ToSearchParams()
+    if err != nil {
+        statusCode, errorResp := h.responseBuilder.BuildErrorResponse(err)
+        c.JSON(statusCode, errorResp)
+        return
+    }
+
+    // Execute count using consumer's business logic
+    count, err := h.service.ExecuteSearchCount(c.Request.Context(), searchParams.(TParams))
+    if err != nil {
+        statusCode, errorResp := h.responseBuilder.BuildErrorResponse(err)
+        c.JSON(statusCode, errorResp)
+        return
+    }
+
+    // Return simple count response
+    c.JSON(http.StatusOK, map[string]int{"count": count})
+}
