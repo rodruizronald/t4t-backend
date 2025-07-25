@@ -115,6 +115,12 @@ func (r *JobRepository) GetJobTechnologiesBatch(_ context.Context, jobIDs []int)
 	return result, nil
 }
 
+// GetSearchCount implements the jobs.DataRepository interface with mock data
+func (r *JobRepository) GetSearchCount(_ context.Context, params *jobs.SearchParams) (int, error) {
+    filteredJobs := r.filterJobs(params)
+    return len(filteredJobs), nil
+}
+
 // filterJobs applies search filters to the mock data
 func (r *JobRepository) filterJobs(params *jobs.SearchParams) []*jobs.JobWithCompany {
 	var filtered []*jobs.JobWithCompany
