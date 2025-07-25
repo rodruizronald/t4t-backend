@@ -60,6 +60,17 @@ const (
         JOIN companies c ON j.company_id = c.id, search_query sq
         WHERE j.is_active = true AND j.search_vector @@ sq.query
     `
+
+	// Count-only search query
+	searchJobsCountOnlyBaseQuery = `
+        WITH search_query AS (
+            SELECT plainto_tsquery('english', $1) AS query
+        )
+        SELECT COUNT(*)
+        FROM jobs j
+        JOIN companies c ON j.company_id = c.id, search_query sq
+        WHERE j.is_active = true AND j.search_vector @@ sq.query
+    `
 )
 
 // Constants for pagination
@@ -86,12 +97,11 @@ func NewRepository(db Database) *Repository {
 	return &Repository{db: db}
 }
 
-// SearchJobsWithCount performs a full-text search and returns both results and total count
-func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchParams) ([]*JobWithCompany, int, error) {
+// buildWhereConditions builds the WHERE conditions and arguments for search queries
+func (r *Repository) buildWhereConditions(params *SearchParams) (string, []any) {
 	// Trim whitespace from query
 	params.Query = strings.TrimSpace(params.Query)
 
-	// Build additional WHERE conditions
 	whereConditions := []string{}
 	args := []any{params.Query}
 	argCount := 2 // Starting at 2 because $1 is the search query
@@ -145,7 +155,16 @@ func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchPara
 		additionalWhere = " AND " + strings.Join(whereConditions, " AND ")
 	}
 
+	return additionalWhere, args
+}
+
+// SearchJobsWithCount performs a full-text search and returns both results and total count
+func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchParams) ([]*JobWithCompany, int, error) {
+	// Build WHERE conditions and arguments
+	additionalWhere, args := r.buildWhereConditions(params)
+
 	// Build final search query with ordering and pagination
+	argCount := len(args) + 1 // Next argument position
 	searchQuery := searchJobsWithCountBaseQuery + additionalWhere +
 		fmt.Sprintf(" ORDER BY j.created_at DESC LIMIT $%d OFFSET $%d", argCount, argCount+1)
 
@@ -198,6 +217,23 @@ func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchPara
 	}
 
 	return jobs, total, nil
+}
+
+// GetSearchCount performs a full-text search and returns only the total count
+func (r *Repository) GetSearchCount(ctx context.Context, params *SearchParams) (int, error) {
+	// Build WHERE conditions and arguments
+	additionalWhere, args := r.buildWhereConditions(params)
+
+	// Build final count query
+	countQuery := searchJobsCountOnlyBaseQuery + additionalWhere
+
+	var total int
+	err := r.db.QueryRow(ctx, countQuery, args...).Scan(&total)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get search count: %w", err)
+	}
+
+	return total, nil
 }
 
 // Create inserts a new job into the database.
