@@ -106,6 +106,72 @@ func (_c *MockDataRepository_GetJobTechnologiesBatch_Call) RunAndReturn(run func
 	return _c
 }
 
+// GetSearchCount provides a mock function for the type MockDataRepository
+func (_mock *MockDataRepository) GetSearchCount(ctx context.Context, params *SearchParams) (int, error) {
+	ret := _mock.Called(ctx, params)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSearchCount")
+	}
+
+	var r0 int
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *SearchParams) (int, error)); ok {
+		return returnFunc(ctx, params)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *SearchParams) int); ok {
+		r0 = returnFunc(ctx, params)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *SearchParams) error); ok {
+		r1 = returnFunc(ctx, params)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockDataRepository_GetSearchCount_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSearchCount'
+type MockDataRepository_GetSearchCount_Call struct {
+	*mock.Call
+}
+
+// GetSearchCount is a helper method to define mock.On call
+//   - ctx context.Context
+//   - params *SearchParams
+func (_e *MockDataRepository_Expecter) GetSearchCount(ctx interface{}, params interface{}) *MockDataRepository_GetSearchCount_Call {
+	return &MockDataRepository_GetSearchCount_Call{Call: _e.mock.On("GetSearchCount", ctx, params)}
+}
+
+func (_c *MockDataRepository_GetSearchCount_Call) Run(run func(ctx context.Context, params *SearchParams)) *MockDataRepository_GetSearchCount_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *SearchParams
+		if args[1] != nil {
+			arg1 = args[1].(*SearchParams)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockDataRepository_GetSearchCount_Call) Return(n int, err error) *MockDataRepository_GetSearchCount_Call {
+	_c.Call.Return(n, err)
+	return _c
+}
+
+func (_c *MockDataRepository_GetSearchCount_Call) RunAndReturn(run func(ctx context.Context, params *SearchParams) (int, error)) *MockDataRepository_GetSearchCount_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SearchJobsWithCount provides a mock function for the type MockDataRepository
 func (_mock *MockDataRepository) SearchJobsWithCount(ctx context.Context, params *SearchParams) ([]*JobWithCompany, int, error) {
 	ret := _mock.Called(ctx, params)

@@ -134,6 +134,110 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/jobs/count": {
+            "get": {
+                "description": "Get the total count of jobs that match the search criteria without returning the actual job data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Get count of jobs matching search criteria",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"golang developer\"",
+                        "description": "Search query",
+                        "name": "q",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Experience level filter",
+                        "name": "experience",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Employment type filter",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "costarica",
+                            "latam"
+                        ],
+                        "type": "string",
+                        "example": "\"costarica\"",
+                        "description": "Location filter",
+                        "name": "location",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "remote",
+                            "hybrid",
+                            "onsite"
+                        ],
+                        "type": "string",
+                        "example": "\"remote\"",
+                        "description": "Work mode filter",
+                        "name": "mode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"Tech Corp\"",
+                        "description": "Company name filter (partial match)",
+                        "name": "company",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"2024-01-01\"",
+                        "description": "Start date filter (YYYY-MM-DD)",
+                        "name": "date_from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"2024-12-31\"",
+                        "description": "End date filter (YYYY-MM-DD)",
+                        "name": "date_to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns count in format: {\"count\": 42}",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/jobs.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/jobs.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
