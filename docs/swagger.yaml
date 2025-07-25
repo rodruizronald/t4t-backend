@@ -188,4 +188,77 @@ paths:
       summary: Search for jobs
       tags:
       - jobs
+  /jobs/count:
+    get:
+      consumes:
+      - application/json
+      description: Get the total count of jobs that match the search criteria without
+        returning the actual job data
+      parameters:
+      - description: Search query
+        example: '"golang developer"'
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Experience level filter
+        in: query
+        name: experience
+        type: string
+      - description: Employment type filter
+        in: query
+        name: type
+        type: string
+      - description: Location filter
+        enum:
+        - costarica
+        - latam
+        example: '"costarica"'
+        in: query
+        name: location
+        type: string
+      - description: Work mode filter
+        enum:
+        - remote
+        - hybrid
+        - onsite
+        example: '"remote"'
+        in: query
+        name: mode
+        type: string
+      - description: Company name filter (partial match)
+        example: '"Tech Corp"'
+        in: query
+        name: company
+        type: string
+      - description: Start date filter (YYYY-MM-DD)
+        example: '"2024-01-01"'
+        in: query
+        name: date_from
+        type: string
+      - description: End date filter (YYYY-MM-DD)
+        example: '"2024-12-31"'
+        in: query
+        name: date_to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Returns count in format: {"count": 42}'
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/jobs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/jobs.ErrorResponse'
+      summary: Get count of jobs matching search criteria
+      tags:
+      - jobs
 swagger: "2.0"
