@@ -21,20 +21,20 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "o4-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
-INPUT_DIR = Path("data/input")
+INPUT_DIR = Path("input")
 PROMPT_FILE = (
     INPUT_DIR / "prompts/job_technologies.md"
 )  # File containing the prompt template
 
 # Define global output directory path
-OUTPUT_DIR = Path("data/output")
+OUTPUT_DIR = Path("data")
 timestamp = datetime.now().strftime("%Y%m%d")
-PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_3"
-PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_4"
+PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_4"
+PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_5"
 PIPELINE_OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
-INPUT_FILE = "jobs_stage_3.json"  # JSON file with job descriptions
-OUTPUT_FILE = "jobs_stage_4.json"  # JSON file with job technologies
+INPUT_FILE = "jobs_stage_4.json"  # JSON file with job descriptions
+OUTPUT_FILE = "jobs_stage_5.json"  # JSON file with job technologies
 
 # Configure logger
 LOG_LEVEL = "DEBUG"  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -261,7 +261,9 @@ def manage_past_jobs_signatures(combined_signatures: set) -> None:
                 indent=2,
             )
 
-        logger.info(f"Historical jobs signatures saved to {current_historical_jobs_file}")
+        logger.info(
+            f"Historical jobs signatures saved to {current_historical_jobs_file}"
+        )
         logger.info(f"Total unique signatures: {len(all_unique_signatures)}")
         logger.info(f"Previous day signatures: {len(previous_signatures)}")
         logger.info(f"New unique signatures: {len(unique_current_signatures)}")

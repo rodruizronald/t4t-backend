@@ -21,13 +21,13 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "o4-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
-INPUT_DIR = Path("data/input")
+INPUT_DIR = Path("input")
 PROMPT_FILE = (
     INPUT_DIR / "prompts/job_eligibility_basic_metadata.md"
 )  # File containing the prompt template
 
 # Define global output directory path
-OUTPUT_DIR = Path("data/output")
+OUTPUT_DIR = Path("data")
 timestamp = datetime.now().strftime("%Y%m%d")
 PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_1"
 PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_2"

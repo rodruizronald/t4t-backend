@@ -21,13 +21,13 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "o4-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
-INPUT_DIR = Path("data/input")
+INPUT_DIR = Path("input")
 PROMPT_FILE = (
     INPUT_DIR / "prompts/job_description.md"
 )  # File containing the prompt template
 
 # Define global output directory path
-OUTPUT_DIR = Path("data/output")
+OUTPUT_DIR = Path("data")
 timestamp = datetime.now().strftime("%Y%m%d")
 PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_2"
 PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_3"
@@ -160,7 +160,8 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
 
         # Add metadata
         result = {
-            "description": description_data.get("description"),
+            "full_description": description_data.get("full_description"),
+            "summary": description_data.get("summary"),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -170,7 +171,8 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
     except Exception as e:
         logger.error(f"Error processing job at {job_url} with OpenAI: {str(e)}")
         return {
-            "description": None,
+            "full_description": None,
+            "summary": None,
             "error": str(e),
         }
 
@@ -230,10 +232,11 @@ async def main():
             processed_jobs.append(job)
             continue
 
-        if result and result["description"]:
+        if result and result["full_description"] and result["summary"]:
             jobs_with_descriptions += 1
             # Add description to job data
-            job["description"] = result["description"]
+            job["original_post"] = result["full_description"]
+            job["description"] = result["summary"]
             logger.info(f"Added description to job: {job_title}")
         else:
             logger.warning(f"Failed to extract description for job: {job_title}")
