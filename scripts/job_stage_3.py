@@ -11,7 +11,7 @@ from loguru import logger
 from playwright.async_api import async_playwright
 
 # Get the root directory
-root_dir = Path(__file__).parent.parent.parent
+root_dir = Path(__file__).parent.parent
 
 # Load environment variables from .env file
 load_dotenv(root_dir / ".env")

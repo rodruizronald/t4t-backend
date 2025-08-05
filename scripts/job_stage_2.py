@@ -11,7 +11,7 @@ from loguru import logger
 from playwright.async_api import async_playwright
 
 # Get the root directory
-root_dir = Path(__file__).parent.parent.parent
+root_dir = Path(__file__).parent.parent
 
 # Load environment variables from .env file
 load_dotenv(root_dir / ".env")
@@ -203,12 +203,8 @@ async def main():
 
     for company_data in data["companies"]:
         company_name = company_data["company"]
-        job_eligibility_selector = company_data.get("html_selectors", {}).get(
-            "job_eligibility_selector", []
-        )
-        job_description_selector = company_data.get("html_selectors", {}).get(
-            "job_description_selector", []
-        )
+        job_eligibility_selector = company_data.get("job_eligibility_selector", [])
+        job_description_selector = company_data.get("job_description_selector", [])
 
         for job in company_data.get("jobs", []):
             job_url = job.get("url", "")
