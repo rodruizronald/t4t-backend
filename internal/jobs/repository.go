@@ -14,7 +14,8 @@ import (
 const (
 	// Base query for selecting job fields
 	selectJobBaseQuery = `
-        SELECT id, company_id, title, description, experience_level, employment_type,
+        SELECT id, company_id, title, original_post, description, responsibilities, skill_must_have,
+               skill_nice_have, main_technologies, benefits, experience_level, employment_type,
                location, work_mode, application_url, is_active, signature, created_at, updated_at
         FROM jobs
     `
@@ -54,7 +55,8 @@ const (
             SELECT plainto_tsquery('english', $1) AS query
         )
         SELECT 
-            j.id, j.company_id, j.title, j.description, j.experience_level, j.employment_type,
+            j.id, j.company_id, j.title, j.original_post, j.description, j.responsibilities, j.skill_must_have,
+            j.skill_nice_have, j.main_technologies, j.benefits, j.experience_level, j.employment_type,
             j.location, j.work_mode, j.application_url, j.is_active, j.signature, j.created_at, j.updated_at,
             c.name as company_name, c.logo_url as company_logo_url,
             COUNT(*) OVER() as total_count
@@ -128,7 +130,13 @@ func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchPara
 			&job.ID,
 			&job.CompanyID,
 			&job.Title,
+			&job.OriginalPost,
 			&job.Description,
+			&job.Responsibilities,
+			&job.SkillMustHave,
+			&job.SkillNiceHave,
+			&job.MainTechnologies,
+			&job.Benefits,
 			&job.ExperienceLevel,
 			&job.EmploymentType,
 			&job.Location,
@@ -219,7 +227,13 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*Job, error) {
 		&job.ID,
 		&job.CompanyID,
 		&job.Title,
+		&job.OriginalPost,
 		&job.Description,
+		&job.Responsibilities,
+		&job.SkillMustHave,
+		&job.SkillNiceHave,
+		&job.MainTechnologies,
+		&job.Benefits,
 		&job.ExperienceLevel,
 		&job.EmploymentType,
 		&job.Location,
@@ -303,7 +317,13 @@ func (r *Repository) GetBySignature(ctx context.Context, signature string) (*Job
 		&job.ID,
 		&job.CompanyID,
 		&job.Title,
+		&job.OriginalPost,
 		&job.Description,
+		&job.Responsibilities,
+		&job.SkillMustHave,
+		&job.SkillNiceHave,
+		&job.MainTechnologies,
+		&job.Benefits,
 		&job.ExperienceLevel,
 		&job.EmploymentType,
 		&job.Location,
