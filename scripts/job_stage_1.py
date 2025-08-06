@@ -12,7 +12,7 @@ from loguru import logger
 from playwright.async_api import async_playwright
 
 # Get the root directory
-root_dir = Path(__file__).parent.parent.parent
+root_dir = Path(__file__).parent.parent
 
 # Load environment variables from .env file
 load_dotenv(root_dir / ".env")
@@ -22,14 +22,14 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "o4-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
-INPUT_DIR = Path("data/input")
+INPUT_DIR = Path("input")
 COMPANIES_FILE = INPUT_DIR / "companies.json"  # JSON file with company career URLs
 PROMPT_FILE = (
     INPUT_DIR / "prompts/job_title_url_parser.md"
 )  # File containing the prompt template
 
 # Define global output directory path
-OUTPUT_DIR = Path("data/output")
+OUTPUT_DIR = Path("data")
 timestamp = datetime.now().strftime("%Y%m%d")
 PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_1"
 PIPELINE_OUTPUT_DIR.mkdir(exist_ok=True, parents=True)

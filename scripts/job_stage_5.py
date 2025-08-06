@@ -8,10 +8,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 from loguru import logger
-from playwright.async_api import async_playwright
 
 # Get the root directory
-root_dir = Path(__file__).parent.parent.parent
+root_dir = Path(__file__).parent.parent
 
 # Load environment variables from .env file
 load_dotenv(root_dir / ".env")
@@ -21,20 +20,20 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "o4-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
-INPUT_DIR = Path("data/input")
+INPUT_DIR = Path("input")
 PROMPT_FILE = (
     INPUT_DIR / "prompts/job_technologies.md"
 )  # File containing the prompt template
 
 # Define global output directory path
-OUTPUT_DIR = Path("data/output")
+OUTPUT_DIR = Path("data")
 timestamp = datetime.now().strftime("%Y%m%d")
-PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_3"
-PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_4"
+PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_4"
+PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_5"
 PIPELINE_OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
-INPUT_FILE = "jobs_stage_3.json"  # JSON file with job descriptions
-OUTPUT_FILE = "jobs_stage_4.json"  # JSON file with job technologies
+INPUT_FILE = "jobs_stage_4.json"  # JSON file with job descriptions
+OUTPUT_FILE = "jobs_stage_5.json"  # JSON file with job technologies
 
 # Configure logger
 LOG_LEVEL = "DEBUG"  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -50,63 +49,6 @@ logger.add(
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 
-async def extract_html_content(url: str, selectors: list[str] = None) -> str:
-    """
-    Use Playwright to fetch HTML content from multiple selectors on a webpage.
-
-    Args:
-        url: The URL to fetch content from
-        selectors: List of CSS selectors to extract content from (optional)
-
-    Returns:
-        String containing concatenated HTML content from all selectors,
-        or full page HTML if no selectors provided
-    """
-    try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
-
-            # Navigate to the URL
-            logger.info(f"Navigating to {url}")
-            await page.goto(url, wait_until="networkidle", timeout=60000)
-
-            # Wait a bit for any dynamic content to load
-            await page.wait_for_timeout(3000)
-
-            if selectors:
-                contents = []
-                for selector in selectors:
-                    try:
-                        # Wait for the specific element to be available
-                        element = await page.wait_for_selector(selector, timeout=5000)
-                        if element:
-                            # Get the HTML content of this element
-                            content = await element.inner_html()
-                            contents.append(content)
-                            logger.info(
-                                f"Successfully extracted content from selector: {selector}"
-                            )
-                        else:
-                            logger.warning(f"Selector not found: {selector}")
-                    except Exception as e:
-                        logger.error(
-                            f"Error extracting content from selector {selector}: {str(e)}"
-                        )
-
-                # Concatenate all contents with a newline between them
-                content = "\n".join(contents) if contents else None
-            else:
-                # Get the full page content if no selectors specified
-                content = await page.content()
-
-            await browser.close()
-            return content
-    except Exception as e:
-        logger.error(f"Error fetching {url}: {str(e)}")
-        return None
-
-
 def read_prompt_template():
     """Read the prompt template from a file."""
     try:
@@ -120,34 +62,43 @@ def read_prompt_template():
         exit(1)
 
 
-async def process_job(job_url: str, selectors: list[str], company_name: str):
-    """Process a single job URL to extract technologies."""
-    logger.info(f"Processing job at {job_url} for {company_name}...")
+async def process_job(job_requirements: dict, job_title: str, company_name: str):
+    """Process a single job's requirements to extract technologies.
 
-    # Extract HTML content
-    html_content = await extract_html_content(job_url, selectors)
-    if not html_content:
-        logger.warning(f"Could not fetch content for job at {job_url}")
+    Args:
+        job_requirements: Dictionary containing 'must_have' and 'nice_to_have' arrays
+        job_title: Title of the job for logging purposes
+        company_name: Company name for context
+
+    Returns:
+        Dictionary with extracted technologies or error information
+    """
+    logger.info(f"Processing job requirements for {job_title} at {company_name}...")
+
+    # Validate requirements structure
+    if not job_requirements:
+        logger.warning(f"No requirements found for job: {job_title}")
         return {
             "technologies": [],
-            "error": "Failed to fetch HTML content",
+            "error": "No requirements provided",
         }
 
-    # Read prompt template and fill it with HTML content
+    # Convert requirements to JSON string for the prompt
+    requirements_json = json.dumps({"requirements": job_requirements}, indent=2)
+
+    # Read prompt template and fill it with requirements JSON
     prompt_template = read_prompt_template()
-    # Escape any curly braces in the HTML content
-    escaped_html = html_content.replace("{", "{{").replace("}", "}}")
-    filled_prompt = prompt_template.replace("{html_content}", escaped_html)
+    filled_prompt = prompt_template.replace("{requirements_json}", requirements_json)
 
     # Send to OpenAI
     try:
-        logger.info(f"Sending content to OpenAI for job at {job_url}...")
+        logger.info(f"Sending requirements to OpenAI for job: {job_title}...")
         response = client.chat.completions.create(
             model=MODEL,
             messages=[
                 {
                     "role": "system",
-                    "content": "You extract technologies from job postings.",
+                    "content": "You extract and categorize technologies from structured job requirements.",
                 },
                 {"role": "user", "content": filled_prompt},
             ],
@@ -161,16 +112,18 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
         # Add metadata
         result = {
             "technologies": tech_data.get("technologies", []),
+            "top_technologies": tech_data.get("top_technologies", []),
             "timestamp": datetime.now().isoformat(),
         }
 
-        logger.success(f"Successfully processed job at {job_url}")
+        logger.success(f"Successfully processed job: {job_title}")
         return result
 
     except Exception as e:
-        logger.error(f"Error processing job at {job_url} with OpenAI: {str(e)}")
+        logger.error(f"Error processing job {job_title} with OpenAI: {str(e)}")
         return {
             "technologies": [],
+            "top_technologies": [],
             "error": str(e),
         }
 
@@ -192,10 +145,10 @@ def manage_past_jobs_signatures(combined_signatures: set) -> None:
     previous_timestamp = previous_date.strftime("%Y%m%d")
 
     # Define paths
-    previous_day_dir = OUTPUT_DIR / previous_timestamp / "pipeline_stage_4"
+    previous_day_dir = OUTPUT_DIR / previous_timestamp / "pipeline_stage_5"
     previous_historical_jobs_file = previous_day_dir / "historical_jobs.json"
 
-    current_day_dir = OUTPUT_DIR / current_timestamp / "pipeline_stage_4"
+    current_day_dir = OUTPUT_DIR / current_timestamp / "pipeline_stage_5"
     current_historical_jobs_file = current_day_dir / "historical_jobs.json"
     duplicates_file = current_day_dir / "duplicated_signatures.json"
 
@@ -261,7 +214,9 @@ def manage_past_jobs_signatures(combined_signatures: set) -> None:
                 indent=2,
             )
 
-        logger.info(f"Historical jobs signatures saved to {current_historical_jobs_file}")
+        logger.info(
+            f"Historical jobs signatures saved to {current_historical_jobs_file}"
+        )
         logger.info(f"Total unique signatures: {len(all_unique_signatures)}")
         logger.info(f"Previous day signatures: {len(previous_signatures)}")
         logger.info(f"New unique signatures: {len(unique_current_signatures)}")
@@ -299,25 +254,26 @@ async def main():
     processed_signatures = set()
 
     for job in data.get("jobs", []):
-        job_url = job.get("application_url", "")
         job_title = job.get("title", "")
         company_name = job.get("company", "")
         job_signature = job.get("signature", "")
-        job_description_selector = job.get("job_description_selector", [])
+        job_requirements = job.get("requirements", {})
 
-        if not job_url:
-            logger.warning(f"Job missing URL, skipping: {job_title}")
+        if not job_requirements:
+            logger.warning(f"Job missing requirements, skipping: {job_title}")
             # Create a clean job object without the excluded fields
             clean_job = {
                 k: v
                 for k, v in job.items()
                 if k not in ["job_description_selector", "eligible"]
             }
+            clean_job["technologies"] = []
+            clean_job["top_technologies"] = []
             processed_jobs.append(clean_job)
             continue
 
-        logger.info(f"Processing new job: {job_title} at {job_url}")
-        result = await process_job(job_url, job_description_selector, company_name)
+        logger.info(f"Processing job: {job_title} at {company_name}")
+        result = await process_job(job_requirements, job_title, company_name)
 
         total_jobs_processed += 1
 
@@ -326,17 +282,20 @@ async def main():
             logger.error(f"Error processing job {job_title}: {result['error']}")
             # Add empty technologies array if extraction failed
             job["technologies"] = []
+            job["top_technologies"] = []
         else:
             if result and result["technologies"]:
                 jobs_with_technologies += 1
                 # Add technologies to job data
                 job["technologies"] = result["technologies"]
+                job["top_technologies"] = result.get("top_technologies", [])
                 logger.info(
                     f"Added {len(result['technologies'])} technologies to job: {job_title}"
                 )
             else:
                 # Add empty technologies array if extraction failed
                 job["technologies"] = []
+                job["top_technologies"] = []
                 logger.warning(f"Failed to extract technologies for job: {job_title}")
 
         # Add signature to processed signatures

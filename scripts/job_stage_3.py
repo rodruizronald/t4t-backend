@@ -11,7 +11,7 @@ from loguru import logger
 from playwright.async_api import async_playwright
 
 # Get the root directory
-root_dir = Path(__file__).parent.parent.parent
+root_dir = Path(__file__).parent.parent
 
 # Load environment variables from .env file
 load_dotenv(root_dir / ".env")
@@ -21,20 +21,20 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "o4-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
-INPUT_DIR = Path("data/input")
+INPUT_DIR = Path("input")
 PROMPT_FILE = (
-    INPUT_DIR / "prompts/job_eligibility_basic_metadata.md"
+    INPUT_DIR / "prompts/job_description.md"
 )  # File containing the prompt template
 
 # Define global output directory path
-OUTPUT_DIR = Path("data/output")
+OUTPUT_DIR = Path("data")
 timestamp = datetime.now().strftime("%Y%m%d")
-PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_1"
-PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_2"
+PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_2"
+PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_3"
 PIPELINE_OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
-INPUT_FILE = "jobs_stage_1.json"  # JSON file with company career URLs
-OUTPUT_FILE = "jobs_stage_2.json"  # JSON file with job eligibility data
+INPUT_FILE = "jobs_stage_2.json"  # JSON file with job eligibility data
+OUTPUT_FILE = "jobs_stage_3.json"  # JSON file with job descriptions
 
 # Configure logger
 LOG_LEVEL = "DEBUG"  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -121,7 +121,7 @@ def read_prompt_template():
 
 
 async def process_job(job_url: str, selectors: list[str], company_name: str):
-    """Process a single job URL to extract eligibility and basic metadata."""
+    """Process a single job URL to extract job description."""
     logger.info(f"Processing job at {job_url} for {company_name}...")
 
     # Extract HTML content
@@ -129,7 +129,7 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
     if not html_content:
         logger.warning(f"Could not fetch content for job at {job_url}")
         return {
-            "job": {},
+            "description": None,
             "error": "Failed to fetch HTML content",
         }
 
@@ -147,7 +147,7 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
             messages=[
                 {
                     "role": "system",
-                    "content": "You extract job eligibility and basic metadata from HTML content.",
+                    "content": "You extract job descriptions from HTML content.",
                 },
                 {"role": "user", "content": filled_prompt},
             ],
@@ -156,11 +156,12 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
 
         # Parse response
         response_text = response.choices[0].message.content
-        job_data = json.loads(response_text)
+        description_data = json.loads(response_text)
 
         # Add metadata
         result = {
-            "job": job_data.get("job", {}),
+            "full_description": description_data.get("full_description"),
+            "summary": description_data.get("summary"),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -170,7 +171,8 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
     except Exception as e:
         logger.error(f"Error processing job at {job_url} with OpenAI: {str(e)}")
         return {
-            "job": {},
+            "full_description": None,
+            "summary": None,
             "error": str(e),
         }
 
@@ -196,55 +198,54 @@ async def main():
         logger.error(f"Error reading input file: {str(e)}")
         return
 
-    # Process each company's jobs
+    # Process each job
     processed_jobs = []
     total_jobs_processed = 0
-    ineligible_jobs_count = 0
+    jobs_with_descriptions = 0
 
-    for company_data in data["companies"]:
-        company_name = company_data["company"]
-        job_eligibility_selector = company_data.get("html_selectors", {}).get(
-            "job_eligibility_selector", []
-        )
-        job_description_selector = company_data.get("html_selectors", {}).get(
-            "job_description_selector", []
-        )
+    for job in data.get("jobs", []):
+        job_url = job.get("application_url", "")
+        job_title = job.get("title", "")
+        company_name = job.get("company", "")
+        job_description_selector = job.get("job_description_selector", [])
 
-        for job in company_data.get("jobs", []):
-            job_url = job.get("url", "")
-            job_title = job.get("title", "")
-            job_signature = job.get("signature", "")
+        # Only process eligible jobs
+        if not job.get("eligible", False):
+            logger.debug(f"Skipping ineligible job: {job_title}")
+            processed_jobs.append(job)
+            continue
 
-            if not job_url:
-                logger.warning(f"Job missing URL, skipping: {job_title}")
-                continue
+        if not job_url:
+            logger.warning(f"Job missing URL, skipping: {job_title}")
+            processed_jobs.append(job)
+            continue
 
-            logger.info(f"Processing new job: {job_title} at {job_url}")
-            result = await process_job(job_url, job_eligibility_selector, company_name)
+        logger.info(f"Processing new eligible job: {job_title} at {job_url}")
+        result = await process_job(job_url, job_description_selector, company_name)
 
-            # Check if there was an error
-            if "error" in result:
-                logger.error(f"Error processing job {job_title}: {result['error']}")
-                continue
+        total_jobs_processed += 1
 
-            if result and result["job"]:
-                total_jobs_processed += 1
+        # Check if there was an error
+        if "error" in result:
+            logger.error(f"Error processing job {job_title}: {result['error']}")
+            # Add job without description
+            processed_jobs.append(job)
+            continue
 
-                # Only add the job to processed_jobs if it's eligible
-                if result["job"].get("eligible", False):
-                    result["job"]["title"] = job_title
-                    result["job"]["company"] = company_name
-                    result["job"]["application_url"] = job_url
-                    result["job"]["signature"] = job_signature
-                    result["job"]["job_description_selector"] = job_description_selector
-                    processed_jobs.append(result["job"])
-                    logger.info(f"Job {job_title} is eligible and added to results")
-                else:
-                    ineligible_jobs_count += 1
-                    logger.info(f"Job {job_title} did not meet eligibility criteria")
+        if result and result["full_description"] and result["summary"]:
+            jobs_with_descriptions += 1
+            # Add description to job data
+            job["original_post"] = result["full_description"]
+            job["description"] = result["summary"]
+            logger.info(f"Added description to job: {job_title}")
+        else:
+            logger.warning(f"Failed to extract description for job: {job_title}")
 
-            # Delay to avoid rate limiting
-            await asyncio.sleep(1)
+        # Add job to processed jobs list (whether description was extracted or not)
+        processed_jobs.append(job)
+
+        # Delay to avoid rate limiting
+        await asyncio.sleep(1)
 
     # Save results
     output_file = PIPELINE_OUTPUT_DIR / OUTPUT_FILE
@@ -257,9 +258,8 @@ async def main():
         )
 
     logger.info(f"Processing complete. Results saved to {output_file}")
-    logger.info(f"Processed {len(processed_jobs)} eligible jobs")
-    if ineligible_jobs_count > 0:
-        logger.warn(f"Ineligible jobs: {ineligible_jobs_count}")
+    logger.info(f"Processed {total_jobs_processed} jobs")
+    logger.info(f"Jobs with descriptions: {jobs_with_descriptions}")
 
 
 if __name__ == "__main__":
@@ -268,7 +268,7 @@ if __name__ == "__main__":
         logger.error("OPENAI_API_KEY environment variable is not set")
         exit(1)
 
-    logger.info("Starting job eligibility and basic metadata extraction process")
+    logger.info("Starting job description extraction process")
     # Run the async main function
     asyncio.run(main())
     logger.info("Process completed")
