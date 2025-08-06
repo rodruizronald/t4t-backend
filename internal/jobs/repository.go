@@ -21,9 +21,10 @@ const (
 
 	createJobQuery = `
         INSERT INTO jobs (
-            company_id, title, description, experience_level, employment_type,
+            company_id, title, original_post, description, responsibilities, skill_must_have, 
+            skill_nice_have, main_technologies, benefits, experience_level, employment_type,
             location, work_mode, application_url, is_active, signature
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING id, created_at, updated_at
     `
 
@@ -182,7 +183,13 @@ func (r *Repository) Create(ctx context.Context, job *Job) error {
 		createJobQuery,
 		job.CompanyID,
 		job.Title,
+		job.OriginalPost,
 		job.Description,
+		job.Responsibilities,
+		job.SkillMustHave,
+		job.SkillNiceHave,
+		job.MainTechnologies,
+		job.Benefits,
 		job.ExperienceLevel,
 		job.EmploymentType,
 		job.Location,

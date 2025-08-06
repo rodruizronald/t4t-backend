@@ -19,7 +19,8 @@ type Job struct {
 	Description      string         `db:"description"`
 	Responsibilities pq.StringArray `db:"responsibilities"`
 	SkillMustHave    pq.StringArray `db:"skill_must_have"`
-	SkillNiceToHave  pq.StringArray `db:"skill_nice_to_have"`
+	SkillNiceHave    pq.StringArray `db:"skill_nice_have"`
+	MainTechnologies pq.StringArray `db:"main_technologies"`
 	Benefits         pq.StringArray `db:"benefits"`
 	ExperienceLevel  string         `db:"experience_level"`
 	EmploymentType   string         `db:"employment_type"`
