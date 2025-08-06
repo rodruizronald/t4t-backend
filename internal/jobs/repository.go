@@ -38,10 +38,11 @@ const (
 
 	updateJobQuery = `
         UPDATE jobs
-        SET company_id = $1, title = $2, description = $3, experience_level = $4,
-            employment_type = $5, location = $6, work_mode = $7, application_url = $8,
-            is_active = $9, signature = $10, updated_at = NOW()
-        WHERE id = $11
+        SET company_id = $1, title = $2, original_post = $3, description = $4, responsibilities = $5,
+            skill_must_have = $6, skill_nice_have = $7, main_technologies = $8, benefits = $9,
+            experience_level = $10, employment_type = $11, location = $12, work_mode = $13,
+            application_url = $14, is_active = $15, signature = $16, updated_at = NOW()
+        WHERE id = $17
         RETURNING updated_at
     `
 
@@ -247,7 +248,13 @@ func (r *Repository) Update(ctx context.Context, job *Job) error {
 		updateJobQuery,
 		job.CompanyID,
 		job.Title,
+		job.OriginalPost,
 		job.Description,
+		job.Responsibilities,
+		job.SkillMustHave,
+		job.SkillNiceHave,
+		job.MainTechnologies,
+		job.Benefits,
 		job.ExperienceLevel,
 		job.EmploymentType,
 		job.Location,
