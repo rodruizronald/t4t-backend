@@ -147,7 +147,7 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
             messages=[
                 {
                     "role": "system",
-                    "content": "You extract job eligibility and basic metadata from HTML content.",
+                    "content": "You extract job descriptions, eligibility information, and basic metadata from HTML content.",
                 },
                 {"role": "user", "content": filled_prompt},
             ],

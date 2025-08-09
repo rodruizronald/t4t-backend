@@ -23,7 +23,7 @@ MODEL = "o4-mini"  # OpenAI model to use
 # Define input directory path and input file name
 INPUT_DIR = Path("input")
 PROMPT_FILE = (
-    INPUT_DIR / "prompts/job_description.md"
+    INPUT_DIR / "prompts/job_skills_responsibilities.md"
 )  # File containing the prompt template
 
 # Define global output directory path
@@ -33,8 +33,8 @@ PIPELINE_INPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_2"
 PIPELINE_OUTPUT_DIR = OUTPUT_DIR / timestamp / "pipeline_stage_3"
 PIPELINE_OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
-INPUT_FILE = "jobs_stage_2.json"  # JSON file with job eligibility data
-OUTPUT_FILE = "jobs_stage_3.json"  # JSON file with job descriptions
+INPUT_FILE = "jobs_stage_2.json"  # JSON file with job descriptions
+OUTPUT_FILE = "jobs_stage_3.json"  # JSON file with job skills and responsibilities
 
 # Configure logger
 LOG_LEVEL = "DEBUG"  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -121,7 +121,7 @@ def read_prompt_template():
 
 
 async def process_job(job_url: str, selectors: list[str], company_name: str):
-    """Process a single job URL to extract job description."""
+    """Process a single job URL to extract skills and responsibilities."""
     logger.info(f"Processing job at {job_url} for {company_name}...")
 
     # Extract HTML content
@@ -129,7 +129,10 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
     if not html_content:
         logger.warning(f"Could not fetch content for job at {job_url}")
         return {
-            "description": None,
+            "responsibilities": [],
+            "skill_must_have": [],
+            "skill_nice_to_have": [],
+            "benefits": [],
             "error": "Failed to fetch HTML content",
         }
 
@@ -147,7 +150,7 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
             messages=[
                 {
                     "role": "system",
-                    "content": "You extract job descriptions from HTML content.",
+                    "content": "You extract job skills and responsibilities from HTML content.",
                 },
                 {"role": "user", "content": filled_prompt},
             ],
@@ -156,12 +159,14 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
 
         # Parse response
         response_text = response.choices[0].message.content
-        description_data = json.loads(response_text)
+        skills_data = json.loads(response_text)
 
         # Add metadata
         result = {
-            "full_description": description_data.get("full_description"),
-            "summary": description_data.get("summary"),
+            "responsibilities": skills_data.get("responsibilities", []),
+            "skill_must_have": skills_data.get("skill_must_have", []),
+            "skill_nice_to_have": skills_data.get("skill_nice_to_have", []),
+            "benefits": skills_data.get("benefits", []),
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -171,8 +176,10 @@ async def process_job(job_url: str, selectors: list[str], company_name: str):
     except Exception as e:
         logger.error(f"Error processing job at {job_url} with OpenAI: {str(e)}")
         return {
-            "full_description": None,
-            "summary": None,
+            "responsibilities": [],
+            "skill_must_have": [],
+            "skill_nice_to_have": [],
+            "benefits": [],
             "error": str(e),
         }
 
@@ -201,7 +208,7 @@ async def main():
     # Process each job
     processed_jobs = []
     total_jobs_processed = 0
-    jobs_with_descriptions = 0
+    jobs_with_skills = 0
 
     for job in data.get("jobs", []):
         job_url = job.get("application_url", "")
@@ -209,18 +216,12 @@ async def main():
         company_name = job.get("company", "")
         job_description_selector = job.get("job_description_selector", [])
 
-        # Only process eligible jobs
-        if not job.get("eligible", False):
-            logger.debug(f"Skipping ineligible job: {job_title}")
-            processed_jobs.append(job)
-            continue
-
         if not job_url:
             logger.warning(f"Job missing URL, skipping: {job_title}")
             processed_jobs.append(job)
             continue
 
-        logger.info(f"Processing new eligible job: {job_title} at {job_url}")
+        logger.info(f"Processing new job: {job_title} at {job_url}")
         result = await process_job(job_url, job_description_selector, company_name)
 
         total_jobs_processed += 1
@@ -228,20 +229,42 @@ async def main():
         # Check if there was an error
         if "error" in result:
             logger.error(f"Error processing job {job_title}: {result['error']}")
-            # Add job without description
-            processed_jobs.append(job)
-            continue
-
-        if result and result["full_description"] and result["summary"]:
-            jobs_with_descriptions += 1
-            # Add description to job data
-            job["original_post"] = result["full_description"]
-            job["description"] = result["summary"]
-            logger.info(f"Added description to job: {job_title}")
+            # Add empty arrays if extraction failed
+            job["responsibilities"] = []
+            job["requirements"] = {"must_have": [], "nice_to_have": []}
+            job["benefits"] = []
         else:
-            logger.warning(f"Failed to extract description for job: {job_title}")
+            if (
+                result["responsibilities"]
+                or result["skill_must_have"]
+                or result["skill_nice_to_have"]
+                or result["benefits"]
+            ):
+                jobs_with_skills += 1
+                # Add extracted data to job
+                job["responsibilities"] = result["responsibilities"]
+                job["requirements"] = {
+                    "must_have": result["skill_must_have"],
+                    "nice_to_have": result["skill_nice_to_have"],
+                }
+                job["benefits"] = result["benefits"]
+                logger.info(
+                    f"Added skills and responsibilities to job: {job_title} "
+                    f"(responsibilities: {len(result['responsibilities'])}, "
+                    f"must_have: {len(result['skill_must_have'])}, "
+                    f"nice_to_have: {len(result['skill_nice_to_have'])}, "
+                    f"benefits: {len(result['benefits'])})"
+                )
+            else:
+                # Add empty arrays if extraction failed
+                job["responsibilities"] = []
+                job["requirements"] = {"must_have": [], "nice_to_have": []}
+                job["benefits"] = []
+                logger.warning(
+                    f"Failed to extract skills and responsibilities for job: {job_title}"
+                )
 
-        # Add job to processed jobs list (whether description was extracted or not)
+        # Add job to final jobs list
         processed_jobs.append(job)
 
         # Delay to avoid rate limiting
@@ -259,7 +282,7 @@ async def main():
 
     logger.info(f"Processing complete. Results saved to {output_file}")
     logger.info(f"Processed {total_jobs_processed} jobs")
-    logger.info(f"Jobs with descriptions: {jobs_with_descriptions}")
+    logger.info(f"Jobs with skills and responsibilities: {jobs_with_skills}")
 
 
 if __name__ == "__main__":
@@ -268,7 +291,7 @@ if __name__ == "__main__":
         logger.error("OPENAI_API_KEY environment variable is not set")
         exit(1)
 
-    logger.info("Starting job description extraction process")
+    logger.info("Starting job skills and responsibilities extraction process")
     # Run the async main function
     asyncio.run(main())
     logger.info("Process completed")

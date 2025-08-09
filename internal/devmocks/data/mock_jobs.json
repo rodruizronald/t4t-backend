@@ -18,10 +18,21 @@
         "Strong understanding of microservices architecture",
         "Experience with REST APIs"
       ],
-      "skill_nice_to_have": [
+      "skill_nice_have": [
         "Experience with Docker and Kubernetes",
         "Knowledge of cloud platforms (AWS/GCP)",
         "Experience with GraphQL"
+      ],
+      "main_technologies": [
+        ".NET",
+        "AWS",
+        "GCP",
+        "React",
+        "GraphQL",
+        "Azure DevOps",
+        "Kubernetes",
+        "PostgreSQL",
+        "CSS"
       ],
       "benefits": [
         "Competitive salary",
@@ -37,7 +48,7 @@
       "is_active": true,
       "signature": "techcorp-senior-engineer-1",
       "days_ago": 5,
-      "company_name": "TechCorp",
+      "company_name": "Amazon",
       "company_logo_url": "https://example.com/techcorp-logo.png"
     },
     {
@@ -58,10 +69,21 @@
         "Experience with modern CSS frameworks",
         "Understanding of responsive design"
       ],
-      "skill_nice_to_have": [
+      "skill_nice_have": [
         "Experience with Next.js",
         "Knowledge of testing frameworks (Jest, Cypress)",
         "Familiarity with design systems"
+      ],
+      "main_technologies": [
+        "Jest",
+        "AWS",
+        "GCP",
+        "React",
+        "GraphQL",
+        "CSS",
+        "TypeScript",
+        "PostgreSQL",
+        "Cypress"
       ],
       "benefits": [
         "Startup equity",
@@ -77,7 +99,7 @@
       "is_active": true,
       "signature": "startupxyz-frontend-dev-2",
       "days_ago": 3,
-      "company_name": "StartupXYZ",
+      "company_name": "Google",
       "company_logo_url": "https://example.com/startupxyz-logo.png"
     },
     {
@@ -98,10 +120,21 @@
         "SQL database expertise",
         "ETL/ELT pipeline experience"
       ],
-      "skill_nice_to_have": [
+      "skill_nice_have": [
         "AWS/GCP cloud platform experience",
         "Knowledge of Kafka or similar streaming platforms",
         "Experience with data visualization tools"
+      ],
+      "main_technologies": [
+        "ETL",
+        "AWS",
+        "GCP",
+        "Python",
+        "GraphQL",
+        "Apache Spark",
+        "Kubernetes",
+        "PostgreSQL",
+        "CSS"
       ],
       "benefits": [
         "Competitive salary package",
@@ -117,7 +150,7 @@
       "is_active": true,
       "signature": "datasolutions-data-engineer-3",
       "days_ago": 7,
-      "company_name": "DataSolutions",
+      "company_name": "gridX",
       "company_logo_url": "https://example.com/datasolutions-logo.png"
     },
     {
@@ -138,10 +171,21 @@
         "HTML, CSS, and JavaScript proficiency",
         "Git version control experience"
       ],
-      "skill_nice_to_have": [
+      "skill_nice_have": [
         "Experience with MongoDB",
         "Basic understanding of REST APIs",
         "Familiarity with testing frameworks"
+      ],
+      "main_technologies": [
+        "MongoDB",
+        "HTML",
+        "JavaScript",
+        "React",
+        "GraphQL",
+        "REST",
+        "Kubernetes",
+        "PostgreSQL",
+        "CSS"
       ],
       "benefits": [
         "Mentorship program",
@@ -157,7 +201,7 @@
       "is_active": true,
       "signature": "techcorp-junior-fullstack-4",
       "days_ago": 2,
-      "company_name": "TechCorp",
+      "company_name": "Amazon",
       "company_logo_url": "https://example.com/techcorp-logo.png"
     },
     {
@@ -178,10 +222,21 @@
         "Docker containerization",
         "CI/CD pipeline experience"
       ],
-      "skill_nice_to_have": [
+      "skill_nice_have": [
         "Kubernetes orchestration",
         "Jenkins or GitLab CI experience",
         "Monitoring tools (Prometheus, Grafana)"
+      ],
+      "main_technologies": [
+        "Jenkins",
+        "AWS",
+        "GCP",
+        "React",
+        "GraphQL",
+        "Grafana",
+        "Kubernetes",
+        "Prometheus",
+        "CSS"
       ],
       "benefits": [
         "Competitive salary",
@@ -197,7 +252,7 @@
       "is_active": true,
       "signature": "cloudtech-devops-engineer-5",
       "days_ago": 4,
-      "company_name": "CloudTech",
+      "company_name": "Google",
       "company_logo_url": "https://example.com/cloudtech-logo.png"
     },
     {
@@ -218,7 +273,18 @@
         "Mobile app deployment experience",
         "Understanding of mobile UI/UX principles"
       ],
-      "skill_nice_to_have": [
+      "main_technologies": [
+        "JavaScript",
+        "TypeScript",
+        "GCP",
+        "React",
+        "GraphQL",
+        "Azure DevOps",
+        "Kotlin",
+        "Swift",
+        "CSS"
+      ],
+      "skill_nice_have": [
         "Native iOS (Swift) development",
         "Native Android (Kotlin) development",
         "Firebase integration experience"
@@ -237,7 +303,7 @@
       "is_active": true,
       "signature": "mobilefirst-mobile-dev-6",
       "days_ago": 6,
-      "company_name": "MobileFirst",
+      "company_name": "gridX",
       "company_logo_url": "https://example.com/mobilefirst-logo.png"
     }
   ],

@@ -36,7 +36,7 @@ type DatabaseConfig struct {
 	Port     int    `envconfig:"DB_PORT" default:"5432"`
 	User     string `envconfig:"DB_USER" default:"postgres"`
 	Password string `envconfig:"DB_PASSWORD" default:"postgres"`
-	DBName   string `envconfig:"DB_NAME" default:"marketplace"`
+	DBName   string `envconfig:"DB_NAME" default:"postgres"`
 	SSLMode  string `envconfig:"DB_SSL_MODE" default:"disable"`
 }
 

@@ -248,6 +248,7 @@ type JobResponse struct {
 	Description      string                  `json:"description"`
 	Responsibilities []string                `json:"responsibilities"`
 	Requirements     JobRequirementsResponse `json:"requirements"`
+	MainTechnologies []string                `json:"main_technologies"`
 	Benefits         []string                `json:"benefits"`
 	ExperienceLevel  string                  `json:"experience_level"`
 	EmploymentType   string                  `json:"employment_type"`

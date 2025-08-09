@@ -14,16 +14,18 @@ import (
 const (
 	// Base query for selecting job fields
 	selectJobBaseQuery = `
-        SELECT id, company_id, title, description, experience_level, employment_type,
+        SELECT id, company_id, title, description, responsibilities, skill_must_have,
+               skill_nice_have, main_technologies, benefits, experience_level, employment_type,
                location, work_mode, application_url, is_active, signature, created_at, updated_at
         FROM jobs
     `
 
 	createJobQuery = `
         INSERT INTO jobs (
-            company_id, title, description, experience_level, employment_type,
+            company_id, title, description, responsibilities, skill_must_have, 
+            skill_nice_have, main_technologies, benefits, experience_level, employment_type,
             location, work_mode, application_url, is_active, signature
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING id, created_at, updated_at
     `
 
@@ -37,10 +39,11 @@ const (
 
 	updateJobQuery = `
         UPDATE jobs
-        SET company_id = $1, title = $2, description = $3, experience_level = $4,
-            employment_type = $5, location = $6, work_mode = $7, application_url = $8,
-            is_active = $9, signature = $10, updated_at = NOW()
-        WHERE id = $11
+        SET company_id = $1, title = $2, description = $3, responsibilities = $4,
+            skill_must_have = $5, skill_nice_have = $6, main_technologies = $7, benefits = $8,
+            experience_level = $9, employment_type = $10, location = $11, work_mode = $12,
+            application_url = $13, is_active = $14, signature = $15, updated_at = NOW()
+        WHERE id = $16
         RETURNING updated_at
     `
 
@@ -52,7 +55,8 @@ const (
             SELECT plainto_tsquery('english', $1) AS query
         )
         SELECT 
-            j.id, j.company_id, j.title, j.description, j.experience_level, j.employment_type,
+            j.id, j.company_id, j.title, j.description, j.responsibilities, j.skill_must_have,
+            j.skill_nice_have, j.main_technologies, j.benefits, j.experience_level, j.employment_type,
             j.location, j.work_mode, j.application_url, j.is_active, j.signature, j.created_at, j.updated_at,
             c.name as company_name, c.logo_url as company_logo_url,
             COUNT(*) OVER() as total_count
@@ -127,6 +131,11 @@ func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchPara
 			&job.CompanyID,
 			&job.Title,
 			&job.Description,
+			&job.Responsibilities,
+			&job.SkillMustHave,
+			&job.SkillNiceHave,
+			&job.MainTechnologies,
+			&job.Benefits,
 			&job.ExperienceLevel,
 			&job.EmploymentType,
 			&job.Location,
@@ -183,6 +192,11 @@ func (r *Repository) Create(ctx context.Context, job *Job) error {
 		job.CompanyID,
 		job.Title,
 		job.Description,
+		job.Responsibilities,
+		job.SkillMustHave,
+		job.SkillNiceHave,
+		job.MainTechnologies,
+		job.Benefits,
 		job.ExperienceLevel,
 		job.EmploymentType,
 		job.Location,
@@ -212,6 +226,11 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*Job, error) {
 		&job.CompanyID,
 		&job.Title,
 		&job.Description,
+		&job.Responsibilities,
+		&job.SkillMustHave,
+		&job.SkillNiceHave,
+		&job.MainTechnologies,
+		&job.Benefits,
 		&job.ExperienceLevel,
 		&job.EmploymentType,
 		&job.Location,
@@ -241,6 +260,11 @@ func (r *Repository) Update(ctx context.Context, job *Job) error {
 		job.CompanyID,
 		job.Title,
 		job.Description,
+		job.Responsibilities,
+		job.SkillMustHave,
+		job.SkillNiceHave,
+		job.MainTechnologies,
+		job.Benefits,
 		job.ExperienceLevel,
 		job.EmploymentType,
 		job.Location,
@@ -290,6 +314,11 @@ func (r *Repository) GetBySignature(ctx context.Context, signature string) (*Job
 		&job.CompanyID,
 		&job.Title,
 		&job.Description,
+		&job.Responsibilities,
+		&job.SkillMustHave,
+		&job.SkillNiceHave,
+		&job.MainTechnologies,
+		&job.Benefits,
 		&job.ExperienceLevel,
 		&job.EmploymentType,
 		&job.Location,
