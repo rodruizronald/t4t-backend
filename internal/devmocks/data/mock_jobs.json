@@ -48,7 +48,7 @@
       "is_active": true,
       "signature": "techcorp-senior-engineer-1",
       "days_ago": 5,
-      "company_name": "TechCorp",
+      "company_name": "Amazon",
       "company_logo_url": "https://example.com/techcorp-logo.png"
     },
     {
@@ -99,7 +99,7 @@
       "is_active": true,
       "signature": "startupxyz-frontend-dev-2",
       "days_ago": 3,
-      "company_name": "StartupXYZ",
+      "company_name": "Google",
       "company_logo_url": "https://example.com/startupxyz-logo.png"
     },
     {
@@ -150,7 +150,7 @@
       "is_active": true,
       "signature": "datasolutions-data-engineer-3",
       "days_ago": 7,
-      "company_name": "DataSolutions",
+      "company_name": "gridX",
       "company_logo_url": "https://example.com/datasolutions-logo.png"
     },
     {
@@ -201,7 +201,7 @@
       "is_active": true,
       "signature": "techcorp-junior-fullstack-4",
       "days_ago": 2,
-      "company_name": "TechCorp",
+      "company_name": "Amazon",
       "company_logo_url": "https://example.com/techcorp-logo.png"
     },
     {
@@ -252,7 +252,7 @@
       "is_active": true,
       "signature": "cloudtech-devops-engineer-5",
       "days_ago": 4,
-      "company_name": "CloudTech",
+      "company_name": "Google",
       "company_logo_url": "https://example.com/cloudtech-logo.png"
     },
     {
@@ -303,7 +303,7 @@
       "is_active": true,
       "signature": "mobilefirst-mobile-dev-6",
       "days_ago": 6,
-      "company_name": "MobileFirst",
+      "company_name": "gridX",
       "company_logo_url": "https://example.com/mobilefirst-logo.png"
     }
   ],
