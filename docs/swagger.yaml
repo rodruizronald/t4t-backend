@@ -51,6 +51,10 @@ definitions:
         type: integer
       location:
         type: string
+      main_technologies:
+        items:
+          type: string
+        type: array
       posted_at:
         type: string
       requirements:

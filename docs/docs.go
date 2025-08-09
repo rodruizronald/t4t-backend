@@ -319,6 +319,12 @@ const docTemplate = `{
                 "location": {
                     "type": "string"
                 },
+                "main_technologies": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "posted_at": {
                     "type": "string"
                 },
