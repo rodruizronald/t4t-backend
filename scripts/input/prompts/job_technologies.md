@@ -60,20 +60,20 @@ Return the analysis in JSON format using the following structure, providing a fl
     },
     { "name": "TechnologyName3", "category": "CategoryName3", "required": true }
   ],
-  "top_technologies": ["TechnologyName1", "TechnologyName3"]
+  "main_technologies": ["TechnologyName1", "TechnologyName3"]
 }
 ```
 
-### Top Technologies Selection Criteria
+### Main Technologies Selection Criteria
 
-The `top_technologies` array should contain up to 10 of the most essential technology names (as strings) for performing the job, selected using the following priority order:
+The `main_technologies` array should contain up to 10 of the most essential technology names (as strings) for performing the job, selected using the following priority order:
 
 1. **Required technologies first**: Prioritize technologies from the `must_have` requirements
 2. **Core job function technologies**: Focus on technologies that are central to the primary job responsibilities (e.g., for a web developer role, prioritize programming languages, frameworks, and databases over auxiliary tools)
 3. **Frequency and emphasis**: Consider technologies that appear multiple times or are emphasized in the requirements
 4. **Foundational technologies**: Include technologies that are fundamental to the role (programming languages, primary frameworks, core databases)
 
-If there are fewer than 10 required technologies, include the most relevant ones available. The `top_technologies` should contain only the names (as strings) of technologies that also appear in the `technologies` array.
+If there are fewer than 10 required technologies, include the most relevant ones available. The `main_technologies` should contain only the names (as strings) of technologies that also appear in the `technologies` array.
 
 ## Example
 
@@ -115,7 +115,7 @@ The expected output would be:
     { "name": "Azure DevOps", "category": "devops", "required": true },
     { "name": "REST", "category": "api", "required": false }
   ],
-  "top_technologies": [
+  "main_technologies": [
     ".NET",
     "C#",
     "React",
