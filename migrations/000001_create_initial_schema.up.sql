@@ -8,12 +8,17 @@ CREATE TABLE companies (
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Jobs Table
+-- Jobs Table (Modified: search_vector is now a regular column)
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
     company_id INT REFERENCES companies(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
+    responsibilities TEXT[],
+    skill_must_have TEXT[],
+    skill_nice_have TEXT[],
+    main_technologies TEXT[],
+    benefits TEXT[],
     experience_level VARCHAR(50) NOT NULL, 
     employment_type VARCHAR(50) NOT NULL,
     location VARCHAR(50) NOT NULL,
@@ -21,14 +26,30 @@ CREATE TABLE jobs (
     application_url VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     signature VARCHAR(64) UNIQUE,
-    search_vector tsvector 
-    GENERATED ALWAYS AS (
-        setweight(to_tsvector('english', coalesce(title, '')), 'A') || 
-        setweight(to_tsvector('english', coalesce(description, '')), 'B')
-    ) STORED,
+    search_vector tsvector, -- Regular column now, not generated
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+-- Function to update search_vector
+CREATE OR REPLACE FUNCTION update_jobs_search_vector()
+RETURNS trigger AS $$
+BEGIN
+    NEW.search_vector := 
+        setweight(to_tsvector('english', coalesce(NEW.title, '')), 'A') ||
+        setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B') ||
+        setweight(to_tsvector('english', coalesce(array_to_string(NEW.skill_must_have, ' '), '')), 'C') ||
+        setweight(to_tsvector('english', coalesce(array_to_string(NEW.skill_nice_have, ' '), '')), 'D');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to maintain search_vector on INSERT and UPDATE
+CREATE TRIGGER update_jobs_search_vector_trigger
+BEFORE INSERT OR UPDATE OF title, description, skill_must_have, skill_nice_have
+ON jobs
+FOR EACH ROW
+EXECUTE FUNCTION update_jobs_search_vector();
 
 -- Technologies Table (canonical names)
 CREATE TABLE technologies (
@@ -58,7 +79,6 @@ CREATE TABLE job_technologies (
 );
 
 -- Create Indexes
-
 -- Companies Indexes
 CREATE UNIQUE INDEX idx_companies_name ON companies(name);
 CREATE INDEX idx_companies_active ON companies(id) WHERE is_active = TRUE;
