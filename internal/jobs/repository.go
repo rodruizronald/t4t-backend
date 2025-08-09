@@ -14,7 +14,7 @@ import (
 const (
 	// Base query for selecting job fields
 	selectJobBaseQuery = `
-        SELECT id, company_id, title, original_post, description, responsibilities, skill_must_have,
+        SELECT id, company_id, title, description, responsibilities, skill_must_have,
                skill_nice_have, main_technologies, benefits, experience_level, employment_type,
                location, work_mode, application_url, is_active, signature, created_at, updated_at
         FROM jobs
@@ -22,10 +22,10 @@ const (
 
 	createJobQuery = `
         INSERT INTO jobs (
-            company_id, title, original_post, description, responsibilities, skill_must_have, 
+            company_id, title, description, responsibilities, skill_must_have, 
             skill_nice_have, main_technologies, benefits, experience_level, employment_type,
             location, work_mode, application_url, is_active, signature
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING id, created_at, updated_at
     `
 
@@ -39,11 +39,11 @@ const (
 
 	updateJobQuery = `
         UPDATE jobs
-        SET company_id = $1, title = $2, original_post = $3, description = $4, responsibilities = $5,
-            skill_must_have = $6, skill_nice_have = $7, main_technologies = $8, benefits = $9,
-            experience_level = $10, employment_type = $11, location = $12, work_mode = $13,
-            application_url = $14, is_active = $15, signature = $16, updated_at = NOW()
-        WHERE id = $17
+        SET company_id = $1, title = $2, description = $3, responsibilities = $4,
+            skill_must_have = $5, skill_nice_have = $6, main_technologies = $7, benefits = $8,
+            experience_level = $9, employment_type = $10, location = $11, work_mode = $12,
+            application_url = $13, is_active = $14, signature = $15, updated_at = NOW()
+        WHERE id = $16
         RETURNING updated_at
     `
 
@@ -55,7 +55,7 @@ const (
             SELECT plainto_tsquery('english', $1) AS query
         )
         SELECT 
-            j.id, j.company_id, j.title, j.original_post, j.description, j.responsibilities, j.skill_must_have,
+            j.id, j.company_id, j.title, j.description, j.responsibilities, j.skill_must_have,
             j.skill_nice_have, j.main_technologies, j.benefits, j.experience_level, j.employment_type,
             j.location, j.work_mode, j.application_url, j.is_active, j.signature, j.created_at, j.updated_at,
             c.name as company_name, c.logo_url as company_logo_url,
@@ -130,7 +130,6 @@ func (r *Repository) SearchJobsWithCount(ctx context.Context, params *SearchPara
 			&job.ID,
 			&job.CompanyID,
 			&job.Title,
-			&job.OriginalPost,
 			&job.Description,
 			&job.Responsibilities,
 			&job.SkillMustHave,
@@ -192,7 +191,6 @@ func (r *Repository) Create(ctx context.Context, job *Job) error {
 		createJobQuery,
 		job.CompanyID,
 		job.Title,
-		job.OriginalPost,
 		job.Description,
 		job.Responsibilities,
 		job.SkillMustHave,
@@ -227,7 +225,6 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*Job, error) {
 		&job.ID,
 		&job.CompanyID,
 		&job.Title,
-		&job.OriginalPost,
 		&job.Description,
 		&job.Responsibilities,
 		&job.SkillMustHave,
@@ -262,7 +259,6 @@ func (r *Repository) Update(ctx context.Context, job *Job) error {
 		updateJobQuery,
 		job.CompanyID,
 		job.Title,
-		job.OriginalPost,
 		job.Description,
 		job.Responsibilities,
 		job.SkillMustHave,
@@ -317,7 +313,6 @@ func (r *Repository) GetBySignature(ctx context.Context, signature string) (*Job
 		&job.ID,
 		&job.CompanyID,
 		&job.Title,
-		&job.OriginalPost,
 		&job.Description,
 		&job.Responsibilities,
 		&job.SkillMustHave,

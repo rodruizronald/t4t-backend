@@ -15,7 +15,6 @@ type Job struct {
 	ID               int            `db:"id"`
 	CompanyID        int            `db:"company_id"`
 	Title            string         `db:"title"`
-	OriginalPost     string         `db:"original_post"`
 	Description      string         `db:"description"`
 	Responsibilities pq.StringArray `db:"responsibilities"`
 	SkillMustHave    pq.StringArray `db:"skill_must_have"`

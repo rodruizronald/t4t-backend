@@ -34,7 +34,8 @@ type mockJobData struct {
 	Description      string   `json:"description"`
 	Responsibilities []string `json:"responsibilities"`
 	SkillMustHave    []string `json:"skill_must_have"`
-	SkillNiceToHave  []string `json:"skill_nice_to_have"`
+	SkillNiceHave    []string `json:"skill_nice_have"`
+	MainTechnologies []string `json:"main_technologies"`
 	Benefits         []string `json:"benefits"`
 	ExperienceLevel  string   `json:"experience_level"`
 	EmploymentType   string   `json:"employment_type"`
@@ -232,12 +233,12 @@ func loadMockData() ([]*jobs.JobWithCompany, map[int][]*jobtech.JobTechnologyWit
 				ID:               jobData.ID,
 				CompanyID:        jobData.CompanyID,
 				Title:            jobData.Title,
-				OriginalPost:     jobData.OriginalPost,
 				Description:      jobData.Description,
 				Responsibilities: jobData.Responsibilities,
 				SkillMustHave:    jobData.SkillMustHave,
-				SkillNiceToHave:  jobData.SkillNiceToHave,
+				SkillNiceHave:    jobData.SkillNiceHave,
 				Benefits:         jobData.Benefits,
+				MainTechnologies: jobData.MainTechnologies,
 				ExperienceLevel:  jobData.ExperienceLevel,
 				EmploymentType:   jobData.EmploymentType,
 				Location:         jobData.Location,

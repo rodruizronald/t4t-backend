@@ -20,16 +20,17 @@ func MapJobToResponse(job *JobWithCompany, technologies []TechnologyResponse) *J
 		Responsibilities: job.Responsibilities,
 		Requirements: JobRequirementsResponse{
 			MustHave:   job.SkillMustHave,
-			NiceToHave: job.SkillNiceToHave,
+			NiceToHave: job.SkillNiceHave,
 		},
-		Benefits:        job.Benefits,
-		ExperienceLevel: job.ExperienceLevel,
-		EmploymentType:  job.EmploymentType,
-		Location:        job.Location,
-		WorkMode:        job.WorkMode,
-		ApplicationURL:  job.ApplicationURL,
-		Technologies:    technologies,
-		PostedAt:        job.CreatedAt,
+		MainTechnologies: job.MainTechnologies,
+		Benefits:         job.Benefits,
+		ExperienceLevel:  job.ExperienceLevel,
+		EmploymentType:   job.EmploymentType,
+		Location:         job.Location,
+		WorkMode:         job.WorkMode,
+		ApplicationURL:   job.ApplicationURL,
+		Technologies:     technologies,
+		PostedAt:         job.CreatedAt,
 	}
 }
 
