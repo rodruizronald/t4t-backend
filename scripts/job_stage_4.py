@@ -17,7 +17,7 @@ load_dotenv(root_dir / ".env")
 
 # Configuration
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-MODEL = "o4-mini"  # OpenAI model to use
+MODEL = "gpt-5-mini"  # OpenAI model to use
 
 # Define input directory path and input file name
 INPUT_DIR = Path("input")
