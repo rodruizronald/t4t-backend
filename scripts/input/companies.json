@@ -1,11 +1,17 @@
 [
-    {
-        "name": "Growth Acceleration Partners",
-        "html_selectors": {
-            "job_board_selector": ["#jobs_list_container"],
-            "job_eligibility_selector": ["main section div dl.company-links"],
-            "job_description_selector": ["main section.company-links"]
-        },
-        "career_url": "https://careers.wearegap.com/jobs?country=Costa+Rica&query="
-    }
+  {
+    "name": "Applaudo",
+    "html_selectors": {
+      "job_board_selector": [
+        "body > div > div:nth-child(9) > div:nth-child(2) > div > div > div.rt-Box.rt-r-mt-9"
+      ],
+      "job_eligibility_selector": [
+        "body > div > div.rt-Container.rt-r-size-4.rt-r-px-5.sm\\:rt-r-px-7.rt-r-py-9 > div > div > div.rt-Box"
+      ],
+      "job_description_selector": [
+        "body > div > div.rt-Container.rt-r-size-4.rt-r-px-5.sm\\:rt-r-px-7.rt-r-py-9 > div > div > div.rt-Box"
+      ]
+    },
+    "career_url": "https://www.applaudo.com/en/careers/"
+  }
 ]
