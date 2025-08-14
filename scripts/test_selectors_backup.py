@@ -140,10 +140,8 @@ async def test_html_selectors(url: str, selectors: list[str]):
 
 async def main():
     """Main function to test selectors."""
-    url = "https://www.applaudo.com/en/careers/6fc2eb69-beb7-4923-89c7-b8c35a60b403/"
-    selectors = [
-        "body > div > div.rt-Container.rt-r-size-4.rt-r-px-5.sm\:rt-r-px-7.rt-r-py-9 > div > div > div.rt-Box"
-    ]
+    url = "https://www.luflox.com/career"
+    selectors = ["main div.career-container"]
 
     logger.info(f"Testing {len(selectors)} selector(s) on {url}")
     await test_html_selectors(url, selectors)
