@@ -1,10 +1,15 @@
 import asyncio
 import sys
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional
 from dataclasses import dataclass
 from loguru import logger
-from playwright.async_api import async_playwright, Page, Frame, Browser
+from playwright.async_api import (
+    async_playwright,
+    Page,
+    Frame,
+    TimeoutError as PlaywrightTimeoutError,
+)
 
 # Configure logger for console output
 logger.remove()
@@ -107,13 +112,28 @@ class SelectorParser:
 
     async def parse(self) -> List[ElementResult]:
         """Main parsing method."""
-        context = await self.setup()
-        await self.wait_for_content(context)
+        try:
+            context = await self.setup()
+            await self.wait_for_content(context)
 
-        for selector in self.selectors:
-            result = await self.extract_element(context, selector)
-            self.results.append(result)
-            self._log_result(result)
+            for selector in self.selectors:
+                result = await self.extract_element(context, selector)
+                self.results.append(result)
+                self._log_result(result)
+
+        except Exception as e:
+            logger.error(f"Error during parsing: {e}")
+            # Add error result for remaining selectors
+            for selector in self.selectors:
+                if not any(r.selector == selector for r in self.results):
+                    self.results.append(
+                        ElementResult(
+                            selector=selector,
+                            found=False,
+                            error_message=f"Parser error: {str(e)}",
+                            context=self.parser_type.value,
+                        )
+                    )
 
         return self.results
 
@@ -137,8 +157,12 @@ class DefaultParser(SelectorParser):
 
     async def wait_for_content(self, context: ParseContext) -> None:
         """Wait for standard page load."""
-        await context.page.wait_for_load_state("networkidle")
-        logger.debug("Page reached network idle state")
+        try:
+            await context.page.wait_for_load_state("domcontentloaded", timeout=30000)
+            logger.debug("Page reached network idle state")
+        except PlaywrightTimeoutError:
+            logger.warning("Network idle timeout - proceeding with available content")
+            # Continue anyway - content might still be available
 
 
 class GreenhouseParser(SelectorParser):
@@ -172,11 +196,18 @@ class GreenhouseParser(SelectorParser):
 
     async def wait_for_content(self, context: ParseContext) -> None:
         """Wait for iframe content to load."""
-        if context.frame:
-            await context.frame.wait_for_load_state("networkidle")
-            logger.debug("Iframe content loaded")
-        else:
-            await context.page.wait_for_load_state("networkidle")
+        try:
+            if context.frame:
+                await context.frame.wait_for_load_state(
+                    "domcontentloaded", timeout=30000
+                )
+                logger.debug("Iframe content loaded")
+            else:
+                await context.page.wait_for_load_state(
+                    "domcontentloaded", timeout=30000
+                )
+        except PlaywrightTimeoutError:
+            logger.warning("Load state timeout - proceeding with available content")
 
     async def extract_element(
         self, context: ParseContext, selector: str, timeout: int = 5000
@@ -209,30 +240,49 @@ class AngularParser(SelectorParser):
 
     async def wait_for_content(self, context: ParseContext) -> None:
         """Wait for Angular to render dynamic content."""
-        # Initial network idle
-        await context.page.wait_for_load_state("networkidle")
-
         try:
-            # Wait for Angular-specific indicators
-            await context.page.wait_for_function(
-                """
-               () => {
-                   // Check for Angular rendered content
-                   const angularElements = document.querySelectorAll('.ng-star-inserted');
-                   const appComponents = document.querySelectorAll('[_ngcontent-ng-c]');
-                   return angularElements.length > 0 || appComponents.length > 0;
-               }
-               """,
-                timeout=10000,
-            )
-            logger.success("Angular dynamic content detected")
+            # For Angular, use 'domcontentloaded' or 'commit' instead of 'networkidle'
+            # as Angular apps often never reach networkidle state
+            await context.page.wait_for_load_state("domcontentloaded", timeout=30000)
+            logger.debug("DOM content loaded")
 
-            # Additional wait for lazy-loaded components
+            # Wait a bit for initial Angular bootstrapping
             await context.page.wait_for_timeout(2000)
 
+            # Try to wait for Angular-specific indicators with a shorter timeout
+            try:
+                await context.page.wait_for_function(
+                    """
+                    () => {
+                        // Check for any Angular indicators
+                        const hasAngularElements =
+                            document.querySelector('[ng-version]') !== null ||
+                            document.querySelector('app-root') !== null ||
+                            document.querySelectorAll('[_ngcontent-ng-c]').length > 0 ||
+                            document.querySelectorAll('.ng-star-inserted').length > 0;
+
+                        // Also check if there's actual content (not just Angular shell)
+                        const hasContent = document.body.innerText.trim().length > 100;
+
+                        return hasAngularElements || hasContent;
+                    }
+                    """,
+                    timeout=10000,
+                )
+                logger.success("Angular content detected")
+
+            except PlaywrightTimeoutError:
+                logger.warning("Angular indicators not found, but proceeding anyway")
+
+            # Give Angular components time to render
+            await context.page.wait_for_timeout(3000)
+
+        except PlaywrightTimeoutError as e:
+            logger.warning(f"Angular content wait timeout: {e}")
+            # Don't re-raise - continue with what we have
         except Exception as e:
-            logger.warning(f"Angular content indicators not found: {e}")
-            # Continue anyway - the page might still work
+            logger.error(f"Unexpected error waiting for Angular content: {e}")
+            # Don't re-raise - continue with what we have
 
     async def extract_element(
         self,
@@ -315,15 +365,39 @@ async def test_html_selectors(
         List of ElementResult objects containing extraction results
     """
     results = []
+    browser = None
 
     try:
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=headless)
             page = await browser.new_page()
 
-            # Navigate to URL
+            # Navigate to URL with different strategies based on parser type
             logger.info(f"Navigating to {url}")
-            await page.goto(url, wait_until="networkidle", timeout=60000)
+
+            try:
+                await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                logger.info("Initial page load complete (domcontentloaded)")
+
+            except PlaywrightTimeoutError:
+                logger.warning(
+                    f"Page load timeout for {url} - proceeding with partial content"
+                )
+                # Don't re-raise - the page might still be usable
+
+            except Exception as e:
+                logger.error(f"Failed to navigate to {url}: {e}")
+                # Return empty results with error messages
+                for selector in selectors:
+                    results.append(
+                        ElementResult(
+                            selector=selector,
+                            found=False,
+                            error_message=f"Navigation failed: {str(e)}",
+                            context="error",
+                        )
+                    )
+                return results
 
             # Create appropriate parser
             parser_instance = ParserFactory.create_parser(parser, page, selectors)
@@ -343,11 +417,22 @@ async def test_html_selectors(
                 print(f"\n[{i}/{len(results)}] {format_result_output(result)}")
                 print(f"\n{'='*80}")
 
-            await browser.close()
-
     except Exception as e:
-        logger.error(f"Error testing selectors on {url}: {str(e)}")
-        raise
+        logger.error(f"Unexpected error testing selectors: {str(e)}")
+        # Ensure we return results even on error
+        if not results:
+            for selector in selectors:
+                results.append(
+                    ElementResult(
+                        selector=selector,
+                        found=False,
+                        error_message=f"Unexpected error: {str(e)}",
+                        context="error",
+                    )
+                )
+    finally:
+        if browser:
+            await browser.close()
 
     return results
 
@@ -355,9 +440,9 @@ async def test_html_selectors(
 async def main():
     """Example usage demonstrating different parser types."""
 
-    url = "https://www.golaunchpad.io/company/careers"
+    url = "https://www.linkedin.com/jobs/search/?currentJobId=4276872405&f_C=293703&geoId=92000000&origin=COMPANY_PAGE_JOBS_CLUSTER_EXPANSION&originToLandingJobPostings=4276872405%2C4281876153%2C4281806618%2C4283549850%2C4274331743"
     selectors = [
-        "body > app-root > div > main > mat-sidenav-container > mat-sidenav-content > app-career > app-career-container > div"
+        "#main > div > div.scaffold-layout__list-detail-inner.scaffold-layout__list-detail-inner--grow > div.scaffold-layout__list > div > ul"
     ]
     results = await test_html_selectors(
         url=url,
