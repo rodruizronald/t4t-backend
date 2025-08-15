@@ -1,5 +1,97 @@
 [
   {
+    "name": "Growth Acceleration Partners",
+    "html_selectors": {
+      "job_board_selector": ["#jobs_list_container"],
+      "job_eligibility_selector": ["main section div dl.company-links"],
+      "job_description_selector": ["main section.company-links"]
+    },
+    "career_url": "https://careers.wearegap.com/jobs?country=Costa+Rica&query="
+  },
+  {
+    "name": "Akurey",
+    "html_selectors": {
+      "job_board_selector": ["body div.hEqhpu"],
+      "job_eligibility_selector": ["body div.jnNIni", "body div.bUjZpO"],
+      "job_description_selector": ["body div.bUjZpO"]
+    },
+    "career_url": "https://www.akurey.com/careers/"
+  },
+  {
+    "name": "Golabs Tech",
+    "html_selectors": {
+      "job_board_selector": ["main ul.list-unstyled"],
+      "job_eligibility_selector": ["main div.redactor-styles"],
+      "job_description_selector": ["main div.redactor-styles"]
+    },
+    "career_url": "https://www.careers-page.com/golabstech#openings"
+  },
+  {
+    "name": "Gorilla Logic",
+    "html_selectors": {
+      "job_board_selector": ["main section.job-postings_parent__5Wlhh"],
+      "job_eligibility_selector": [
+        "[data-fabric-component='Flex'].css-1b6n4o1",
+        "#descriptionWrapper"
+      ],
+      "job_description_selector": ["#descriptionWrapper"]
+    },
+    "career_url": "https://gorillalogic.com/careers/open-roles?country=Remote%2C+Costa+Rica"
+  },
+  {
+    "name": "10Pearls",
+    "html_selectors": {
+      "job_board_selector": ["body section.elementor-element-5bf2785"],
+      "job_eligibility_selector": [
+        "main div.job__header",
+        "main div.job__description"
+      ],
+      "job_description_selector": ["main div.job__description"]
+    },
+    "career_url": "https://10pearls.com/latin-america-job-openings/"
+  },
+  {
+    "name": "Hikru",
+    "html_selectors": {
+      "job_board_selector": ["body div.torre-careers"],
+      "job_eligibility_selector": [
+        "#card-details > main > div",
+        "#card-responsibilities > main > div"
+      ],
+      "job_description_selector": [
+        "#card-responsibilities > main > div",
+        "#card-requirements > main > div"
+      ]
+    },
+    "career_url": "https://www.hikrutech.com/career#Carrer-List"
+  },
+  {
+    "name": "Everstream Analytics",
+    "html_selectors": {
+      "job_board_selector": ["#job-listings"],
+      "job_eligibility_selector": [
+        "main div.job__header",
+        "main div.job__description"
+      ],
+      "job_description_selector": ["main div.job__description"]
+    },
+    "career_url": "https://www.everstream.ai/careers/"
+  },
+  {
+    "name": "Zencore",
+    "html_selectors": {
+      "job_board_selector": ["body div.postings-wrapper"],
+      "job_eligibility_selector": [
+        "body > div.content-wrapper.posting-page > div > div.section-wrapper.accent-section.page-full-width",
+        "body > div.content-wrapper.posting-page > div > div:nth-child(2)"
+      ],
+      "job_description_selector": [
+        "body > div.content-wrapper.posting-page > div > div:nth-child(2)"
+      ]
+    },
+    "career_url": "https://jobs.lever.co/zencore?location=LATAM"
+  },
+  {
     "name": "Applaudo",
     "html_selectors": {
       "job_board_selector": [
@@ -13,5 +105,72 @@
       ]
     },
     "career_url": "https://www.applaudo.com/en/careers/"
+  },
+  {
+    "name": "Admios",
+    "html_selectors": {
+      "job_board_selector": ["#job-positions-section > div > div > div > div"],
+      "job_eligibility_selector": [
+        "main div.job__header",
+        "main div.job__description"
+      ],
+      "job_description_selector": ["main div.job__description"]
+    },
+    "career_url": "https://www.admios.com/careers#job-positions-section"
+  },
+  {
+    "name": "Elite",
+    "html_selectors": {
+      "job_board_selector": ["main div.job-posts"],
+      "job_eligibility_selector": [
+        "main div.job__header",
+        "main div.job__description"
+      ],
+      "job_description_selector": ["main div.job__description"]
+    },
+    "career_url": "https://job-boards.greenhouse.io/elitetechnology?offices%5B%5D=4004147008"
+  },
+  {
+    "name": "Launchpad Technologies",
+    "html_selectors": {
+      "job_board_selector": [
+        "body > main > div > div.index__main > div.padding > div"
+      ],
+      "job_eligibility_selector": [
+        "main div.job__header",
+        "main div.job__description"
+      ],
+      "job_description_selector": ["main div.job__description"]
+    },
+    "career_url": "https://www.golaunchpad.io/company/careers"
+  },
+  {
+    "name": "Luflox",
+    "html_parser": "angular",
+    "html_selectors": {
+      "job_board_selector": ["div.career-container.ng-star-inserted"],
+      "job_eligibility_selector": [
+        "body > app-root > div > main > mat-sidenav-container > mat-sidenav-content > app-career-detail > mat-card"
+      ],
+      "job_description_selector": [
+        "body > app-root > div > main > mat-sidenav-container > mat-sidenav-content > app-career-detail > mat-card"
+      ]
+    },
+    "career_url": "https://www.luflox.com/career"
+  },
+  {
+    "name": "SMASH",
+    "html_parser": "default",
+    "html_selectors": {
+      "job_board_selector": [
+        "body > main > div > div > div > div.col.col-xs-7.jobs-list"
+      ],
+      "job_eligibility_selector": [
+        "body > main > div.job-header",
+        "#job-description"
+      ],
+      "job_description_selector": ["#job-description"]
+    },
+    "career_url": "https://smashcr.applytojob.com/apply/"
   }
 ]
